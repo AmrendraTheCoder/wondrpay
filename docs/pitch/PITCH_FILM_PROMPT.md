@@ -3,9 +3,9 @@
 One brief to turn everything we already have (the recorded demo, app screenshots, brand images and the Foundations script) into a 3-minute pitch film. It answers the judges' main question: **why is WondrPay better than what exists, and how will it win users?**
 
 **How to use this file:**
-1. **All-in-one AI video tool** (Hera, InVideo AI, Runway, Veo, Kling, Sora, Pika, HeyGen, Descript): upload the assets listed in section 2, then paste the **master prompt** (section 1). If the tool limits prompt length, paste the **short prompt** (section 7) instead.
-2. **Generated shots**: use the shot prompts in section 4 for the few scenes we have no footage of (the "problem" scenes).
-3. **Human editor** (Premiere, Final Cut, CapCut, After Effects, Remotion): sections 2–6 are the full edit list, with exact file paths and timecodes.
+1. **All-in-one AI video tool** (Hera, InVideo AI, Runway, Veo, Kling, Sora, Pika, HeyGen, Descript): upload the assets listed in section 2, then paste the **master prompt** (section 1). If the tool limits prompt length, paste the **short prompt** (section 8) instead.
+2. **Generated shots**: use the shot prompts in section 6 for the few scenes we have no footage of (the "problem" scenes).
+3. **Human editor** (Premiere, Final Cut, CapCut, After Effects, Remotion): sections 2–7 are the full edit list: file paths and timecodes, a micro-animation kit with timings (section 3) and 14 infographic specs with exact data (section 4).
 
 > **Honesty rules (non-negotiable):**
 > - Label the product as **live on Whitechain testnet**.
@@ -50,11 +50,31 @@ Slow push-ins on phones, gentle parallax between the device and the dot grid, at
 tilt. On every successful payment, a lime check draws itself with two pulse rings. Transitions:
 quick whip-pans or match cuts on the phone frame; no star wipes, no glitch effects.
 
+MICRO-ANIMATIONS. Layer small, consistent UI animations over the real footage, the same way every
+time: a soft tap circle wherever a finger touches; PIN dots that fill with a little overshoot; a
+fingerprint whose ridges trace in and turn lime; lime QR corner brackets with a sweep line; four trust
+checks that tick in one by one; balances that roll like an odometer; a shimmer across the "0 gas"
+pill; toasts that slide in through a blur; names that type in letter by letter with a verified tick;
+a scratch card that scratches off with metallic particles. When the footage shows something
+important, freeze for 0.4 s, dim the rest to 40% and drop a numbered blue callout pin with a 3-5 word
+label. No shot stays still for more than 4 seconds.
+
+INFOGRAPHICS. Between footage, cut to clean animated infographics on the navy dot grid, one idea per
+frame, built with exact numbers (never generated): fee bars per $100 (cards $2-3 vs WondrPay $0.50,
+split into gas $0.04, cashback $0.23, WondrPay $0.23); a settlement timeline (days vs ~3 seconds); a
+payment flow diagram (phone -> signature -> relayer pays gas -> Whitechain -> shop wallet, with an
+Arkiv receipt branch and a crossed-out "WondrPay account"); "what you sign" (exact amount, one
+recipient, 10 minutes) vs "approve unlimited"; wallet problems flipping into fixes; two money pipes
+(custodial with a frozen middle vs wallet-to-wallet); twelve wallets collapsing into one World ID; a
+dot-matrix corridor map with drawing arcs; a four-step growth flywheel; count-up target counters; a
+road-to-mainnet stepper; and a final comparison matrix. Bars grow left to right, lines draw, numbers
+count up, ticks pop in lime.
+
 SOUND. Minimal electronic bed around 100 BPM, soft sub bass, building gently into the go-to-market
 section. Glassy UI clicks on taps and a bright two-note chime on each payment. Duck the music under
 the voiceover by 12 dB.
 
-VOICE. Warm, confident, global English, about 155 words a minute. Use the voiceover in section 3
+VOICE. Warm, confident, global English, about 155 words a minute. Use the voiceover in section 5
 word for word. Burn in clean subtitles (Manrope 600, white, bottom center, no box).
 
 END CARD. The uploaded cover image (wondrpay-cover.png): logo, "UPI for digital dollars.", the four
@@ -117,25 +137,127 @@ Open https://wondrpay-app.vercel.app on a phone-sized window (390×844) and scre
 
 ---
 
-## 3. Storyboard and voiceover (3:00)
+## 3. Micro-animation kit (use everywhere, same timings every time)
 
-The voiceover is the Foundations script (`docs/pitch/foundations.md`), about 460 words. **Bold** words in the on-screen column are the only text on screen.
+Consistency is what makes it feel premium: the same element always moves the same way. Easing for everything unless stated: **spring out** `cubic-bezier(.2,.9,.3,1)`. Sounds are short, quiet and glassy; never stack more than two at once.
 
-| # | Time | Picture | On-screen text | Voiceover |
+| Code | Element | Animation | Timing | Sound |
 |---|---|---|---|---|
-| 1 | 0:00–0:15 | Black → three grey glass tiles labelled Cost, Safety, Simplicity crack one by one (generated, shot G1). Hard cut: the logo from `wondrpay-cover.png` snaps in on blue, then the home screen (`wondrpay-1-home.png`) rises in a phone. | **Cost. Safety. Simplicity.** → **WondrPay** | "Everyone asks us the same thing: why WondrPay, when cards, crypto wallets and Binance Pay already exist? Here's the honest answer. Each of them breaks in one of three places: cost, safety or simplicity. We fixed all three at once." |
-| 2 | 0:15–0:35 | **Problem:** grey card terminal, receipt printing "2.9% + fee", a calendar flipping 3 days, a "chargeback" stamp (shot G2). **Fix:** full color, D2 → D3 (scan, checks, PIN, Paid, lime check) → 3 s of D4 explorer. | **2–3% · 3 days · chargebacks** → **0.5% · seconds · proof** | "Cards and Stripe. A shop pays 2 to 3 percent, waits days for its money, and loses to chargeback fraud. With WondrPay it pays half a percent, the money lands in its own wallet in seconds, and a refund needs proof from a verified human, stored on Arkiv where no one can edit it." |
-| 3 | 0:35–1:05 | **Problem:** a 12-word seed phrase on paper burning (G3), a red "Insufficient ETH for gas" toast, two addresses that differ by one character (G4), a red "Approve unlimited" button (G5). **Fix:** phone with `wondrpay-1-home.png` → fingerprint glyph → D8 (paying `priya.wondrpay.eth`, her phone pops) → Payment security screen (capture 2). | **Seed phrase · gas · lookalike addresses · unlimited approvals** → **Fingerprint · 0 gas · names · one exact amount** | "Crypto wallets like MetaMask. A seed phrase you'll lose. Gas you have to buy first. Forty-two-character addresses that scammers copy with lookalikes: that's address poisoning. And 'approve' buttons that can drain a wallet years later. WondrPay has no seed phrase: the key is locked by your fingerprint, on your phone. No gas: we pay it. You pay names, like priya.wondrpay.eth, and shops carry a verified badge. And there are no approvals at all. You sign one exact amount, to one recipient, valid for ten minutes. Even our own relayer can't change where it goes." |
-| 4 | 1:05–1:15 | **Problem:** grey app screen "Account restricted" with a padlock (G6). **Fix:** simple animated line from a wallet icon straight to a shop icon, no box in between, then 3 s of D4 with the "to" address highlighted in lime. | **Not your money** → **Wallet → shop. Nothing in between.** | "Custodial apps like Binance Pay. Easy, but the money isn't yours. Accounts get frozen, and platforms can fail. WondrPay never holds your money. It goes straight from your wallet to the shop's." |
-| 5 | 1:15–1:25 | Fast montage, about 2 s each: D5 (Autopay on) → D11 (refund form) → `store-refund-review.png` in a laptop → D14 (+1.65 lands, lime chime). | **Refunds · subscriptions · no gas** | "Crypto checkouts like Coinbase Commerce stop at 'paid'. Refunds are manual, there are no subscriptions, and the customer still needs gas. We ship all three." |
-| 6 | 1:25–1:50 | D10 (World ID sheet, keep the "simulated" caption) → a ring of 12 identical bot avatars collapsing into one glowing human silhouette (G7) → D9 scratch card reveal → rewards screen (capture 3). | **One real human per account** | "What's new isn't one feature. It's the combination: UPI's two-tap experience, on digital dollars, with one real human behind every account, through World ID. That one rule makes everything else safe. Cashback can't be farmed by bots. Refunds can't be abused by fake accounts. And every reward is paid from fees we've already earned, never from a token we printed." |
-| 7 | 1:50–2:40 | Portal timeline (capture 1) ticking through steps → D1 (Amaron integration) → `store-dashboard.png` / `dashboard-v2-drawer.png` in a laptop → dark world map, three glowing lime arcs: UAE→India, Ukraine→EU, and dots on Turkey, Nigeria, Argentina (G8) → WhiteBIT-style "USDT ⇄ ₹ / ₴" exchange chip (no third-party logos unless licensed) → counters count up. | **Shops first** → **Plugin · Shopify · payment link** → **Gulf → India · Ukraine → EU · dollar savers** → **5,000 shops · 100,000 people (year-one target)** | "We go shops first, because shops bring shoppers. A shop joins in minutes with our WooCommerce plugin, a Shopify guide, or just a payment link. No code, no setup fee. We start where people already hold dollars and W Group already has users: Gulf workers paying family in India, Ukrainian freelancers paid in USDT, and savers in Turkey, Nigeria and Argentina. Shoppers come for zero gas and cashback, and stay because it's faster than their bank. Ten free transfers a month to friends pulls in the next user. WhiteBIT is the way in and out: dollars in, rupees and hryvnias out. Year one: 5,000 shops and 100,000 verified people." |
-| 8 | 2:40–2:52 | Three chips rise in a row, each ticking from grey to lime: **Audit**, **Fee split on-chain**, **Key recovery**. Small caption under them: "Everything else: live on testnet". | **Audit · On-chain fee · Key recovery** | "For mainnet we have three steps: an audit of our three contracts, the fee split on-chain, and key recovery, so a lost phone isn't lost money. Everything else runs today on Whitechain testnet." |
-| 9 | 2:52–3:00 | Three lines stack, one per beat, then the end card (`wondrpay-cover.png`) holds 4 s. | **Cheaper than cards. Safer than wallets. Yours, unlike exchanges.** | "Cheaper than cards. Safer than wallets. Yours, unlike exchanges. That's WondrPay. Thank you." |
+| **M1** | Tap indicator | A soft white circle (36 px, 30% opacity) appears where the finger lands, scales 0.6→1.2 and fades | 280 ms | tiny click |
+| **M2** | Button press | Button scales to 0.96 and back with a light inner glow | 160 ms | none |
+| **M3** | PIN entry | Each of the 6 dots fills blue with a 1.25× overshoot, 90 ms apart; on the 6th, all dots pulse once | 6 × 90 ms + 200 ms | soft tick per dot |
+| **M4** | Fingerprint | The ridge lines trace in from the center outward, then the glyph turns lime | 600 ms | rising "shimmer" |
+| **M5** | QR scan | Lime corner brackets snap in (4 corners staggered 40 ms), a lime sweep line passes top→bottom twice | 900 ms | low "whoosh" |
+| **M6** | Trust checks | The four checks ("Created by WondrPay", "Amount untampered", "Signed by the shop", "Still valid") tick in one by one: grey ring → lime fill → white check draws | 4 × 140 ms stagger | tick ×4, rising pitch |
+| **M7** | Paid | A lime circle draws clockwise, the check draws inside, two pulse rings expand and fade, the amount counts up | 700 ms | bright two-note chime |
+| **M8** | Balance odometer | Each digit rolls vertically like an odometer to the new value, lowest digit last | 500 ms | soft rattle |
+| **M9** | "0 gas" pill | A diagonal shimmer passes across the lime pill every few seconds | 900 ms | none |
+| **M10** | Toast | Slides down from the top with a 20 px blur that clears, holds, slides back up | 250 in / 1.6 s / 200 out | "pop" |
+| **M11** | Name chip | `priya.wondrpay.eth` types in letter by letter, then a verified tick pops beside it | 35 ms per letter + 200 ms | soft keys |
+| **M12** | Scratch card | Silver layer scratches away in 3 strokes with tiny metallic particles; the prize scales 0.9→1 | 1.1 s | scratchy then chime |
+| **M13** | Identicon | The 5×5 pixel avatar assembles pixel by pixel from the center | 400 ms | none |
+| **M14** | Timeline step | The connector line fills downward in lime, then the next dot pops from grey to a lime tick | 350 ms | tick |
+| **M15** | Counter | Numbers count up with tabular figures, easing out; units fade in after | 1.2 s | none |
+| **M16** | Bar / line chart | Bars grow from the baseline left to right, 60 ms apart; the value label fades in at the top | 700 ms total | none |
+| **M17** | Map arc | A lime arc draws between two dots with a bright comet head; the destination dot ripples | 1.0 s | soft "zip" |
+| **M18** | Chip state | A chip's border fills grey→lime clockwise, then a tick appears inside | 450 ms | tick |
+| **M19** | Problem → fix | The grey problem frame desaturates further, cracks once (thin white line), then shatters into a quick blur that reveals the full-color fix underneath | 500 ms | glass crack |
+| **M20** | Callout pin | A numbered blue pin drops onto real footage, a thin leader line draws to a label card | 300 ms | none |
+
+**Callouts on real footage.** Whenever a clip shows something important, freeze for 0.4 s, dim the rest of the frame to 40%, and drop an M20 pin with a 3–5 word label. Then release the freeze. Use these:
+- D3: pins on the four trust checks: ① "Who made the order" ② "Amount not changed" ③ "Shop's signature" ④ "Expires in 5 min".
+- D4: one pin on the gas payer, "Gas paid by WondrPay", and one on the recipient, "Straight to the shop".
+- D8: one pin on the name, "A name, not an address".
+- D13: one pin on the 20 / 50 / 100 % buttons, "Shop decides, on-chain".
 
 ---
 
-## 4. Generated shot prompts (problem scenes only)
+## 4. Animated infographics (exact data, build them; don't generate)
+
+Every infographic uses the same grid: 1920×1080, 120 px margins, Manrope, navy background with the dot grid, one idea per frame. Grey `#5A6178` is "today's way", blue `#2448FF` is WondrPay, lime `#DDF05A` highlights the key number. Each holds at least 2 s after it finishes animating.
+
+**I1 · The three breaks** (scene 1). Three columns, an icon on top of each: a coin (Cost), a shield (Safety), a hand tapping (Simplicity). Under each, the offenders fade in as small grey labels: Cost: "Cards", Safety: "Wallets · Custodial apps", Simplicity: "Crypto checkouts". All three icons crack (M19), then re-form in blue with lime ticks (M18) as the WondrPay logo lands in the middle.
+
+**I2 · What $100 costs a shop** (scene 2). Horizontal bars, M16:
+| Bar | Value | Color |
+|---|---|---|
+| Card payment | $2.00–$3.00 (draw to $3.00, label "$2–3") | grey |
+| WondrPay | $0.50 | blue |
+Then the WondrPay bar zooms in and splits into three segments, each labelled with M15: **gas $0.04** · **your cashback $0.23** · **WondrPay $0.23**. Caption: "per $100 at a shop".
+
+**I3 · When the shop gets paid** (scene 2). A horizontal timeline from "Sale" to "7 days". A grey dot slides slowly across to a 2–7 day bracket labelled "Cards". A lime dot pings at the very start with the label "WondrPay · ~3 seconds" and an M7 check. Caption: "Money in the shop's own wallet".
+
+**I4 · Anatomy of one payment** (scene 3 or 4). A left-to-right flow diagram that builds node by node (M14 connectors):
+`Your phone (fingerprint / PIN)` → `signs: 2.50 USDT · to Priya · 10 min` → `WondrPay relayer (pays the gas)` → `Whitechain` → `Priya's wallet`.
+A dashed branch below Whitechain goes to `Arkiv receipt (no one can edit)`. A grey "WondrPay's bank account" box appears above the flow, then gets crossed out with a red line: "We never hold it".
+
+**I5 · What you actually sign** (scene 3). Split screen. Left, grey, a generic "Approve unlimited" pop-up with a red infinity sign and the label "Can be drained later". Right, blue, a WondrPay signature card with three lines that tick in (M6): **Amount: 2.50 USDT exactly** · **To: priya.wondrpay.eth only** · **Valid: 10 minutes**. Bottom caption: "Even our relayer can't change it".
+
+**I6 · Wallet problems → fixes** (scene 3, end). A 4-row checklist. Each row starts as a grey problem and flips (card-flip, 300 ms, 120 ms stagger) to a blue fix:
+| Problem | Fix |
+|---|---|
+| 12-word seed phrase | Fingerprint or PIN |
+| Buy gas first | 0 gas: we pay it |
+| 42-character address | `name.wondrpay.eth` + verified badge |
+| Unlimited approvals | One exact amount, one recipient |
+
+**I7 · Where the money sits** (scene 4). Two horizontal pipes. Top, grey: `You → Platform's account → Shop`, and the middle box frosts over with a padlock: "Frozen", "Withdrawals paused". Bottom, blue: `Your wallet → Shop's wallet`, a lime pulse travels straight through in ~0.5 s.
+
+**I8 · What a checkout gives you** (scene 5). A 3-column tick table built column by column (M18):
+| | Typical crypto checkout | WondrPay |
+|---|---|---|
+| Customer pays gas | yes | **no** |
+| Refunds | manual | **built in, on-chain** |
+| Subscriptions | no | **yes, cancel any time** |
+| WooCommerce / Shopify / links | partly | **yes** |
+
+**I9 · One human, not a hundred wallets** (scene 6). Twelve grey wallet icons in a ring. They pull inward into one World ID orb (lime outline). Out of the orb come three facts as chips (M18): **5 claims a day** · **$5 a month** · **across all your wallets**. Second beat: a bar "Reward budget" fills from **50% of (fee − gas)** with the caption "Paid from fees we've earned. Never from printed tokens."
+
+**I10 · The money corridors** (scene 7). Dot-matrix world map (G8 style, but built so the numbers are exact). Arcs draw with M17, labels count up with M15:
+- **UAE → India**: "The Gulf sends 38% of India's remittances" **[verify: RBI, FY24]**
+- **Ukraine → EU**: "Freelancers paid in USDT"
+- Pulsing dots on **Turkey · Nigeria · Argentina**: "People saving in dollars"
+Header counter: **$685B** sent home to developing countries a year, **~6%** average cost **[verify: World Bank]**.
+
+**I11 · The flywheel** (scene 7). A circle of four nodes with arrows rotating clockwise, each lighting up in turn: **Shops join free** (plugin, link) → **Shoppers pay, 0 gas** → **Cashback from the fee** → **More shoppers ask shops for WondrPay** → back to the start. The middle shows "WhiteBIT: dollars in, rupees and hryvnias out".
+
+**I12 · Year-one target** (scene 7, end). Two big counters side by side (M15): **5,000 shops** · **100,000 verified people**. A small grey label stays visible the whole time: "Year-one target". Optional third line: "Year 3: 50,000 shops · 1,000,000 people" (also a target).
+
+**I13 · Road to mainnet** (scene 8). A horizontal stepper with three chips. Behind them, a faint "Built and live on testnet" row of small icons ticks fully lime first: pay · names · refunds · subscriptions · rewards · business portal. Then the three mainnet chips light one by one (M18): **Audit 3 contracts** → **Fee split on-chain** → **Key recovery**.
+
+**I14 · The comparison** (scene 9 lead-in, 4 s). The matrix builds row by row, with the WondrPay column last and highlighted:
+| | Cards | Crypto wallets | Custodial apps | Crypto checkouts | **WondrPay** |
+|---|---|---|---|---|---|
+| Shop fee | 2–3% | n/a | low | ~1% | **0.5%** |
+| Money arrives | 2–7 days | seconds | inside the app | seconds | **seconds, own wallet** |
+| Who holds it | bank | you | platform | you | **you** |
+| Seed phrase / gas | no / n/a | yes / yes | no / no | yes / yes | **no / no** |
+| Refunds | chargebacks | manual | in-app | manual | **with proof, on-chain** |
+| Bot-proof rewards | no | no | KYC | no | **one human (World ID)** |
+
+---
+
+## 5. Storyboard and voiceover (3:00)
+
+The voiceover is the Foundations script (`docs/pitch/foundations.md`), about 460 words. Codes: **D** = demo clip, **G** = generated shot, **I** = infographic, **M** = micro-animation. On-screen text is kept to the bold words.
+
+| # | Time | Picture (in order) | On-screen text | Voiceover |
+|---|---|---|---|---|
+| 1 | 0:00–0:15 | G1 cracks (3 s) → **I1** the three breaks (6 s) → logo from `wondrpay-cover.png` lands with a soft bloom → `wondrpay-1-home.png` rises in a phone; balance odometer (M8), "0 gas" shimmer (M9). | **Cost. Safety. Simplicity.** → **WondrPay** | "Everyone asks us the same thing: why WondrPay, when cards, crypto wallets and Binance Pay already exist? Here's the honest answer. Each of them breaks in one of three places: cost, safety or simplicity. We fixed all three at once." |
+| 2 | 0:15–0:35 | G2 card terminal (3 s) → M19 shatter → **I2** fee bars and the $0.50 split (5 s) → D2 → D3 with QR scan (M5), trust-check callouts (M6 + M20), PIN (M3), Paid (M7) → **I3** settlement timeline (3 s). | **2–3% · days · chargebacks** → **0.5% · seconds · proof** | "Cards and Stripe. A shop pays 2 to 3 percent, waits days for its money, and loses to chargeback fraud. With WondrPay it pays half a percent, the money lands in its own wallet in seconds, and a refund needs proof from a verified human, stored on Arkiv where no one can edit it." |
+| 3 | 0:35–1:05 | G3 seed phrase burns → G4 lookalike address (red character) → G5 "Approve unlimited" → M19 shatter → `wondrpay-1-home.png` with fingerprint (M4) → D8 paying `priya.wondrpay.eth` (M11 name chip, callout "A name, not an address") → **I5** what you sign (4 s) → **I6** problems flip to fixes (4 s) → Payment security screen (capture 2) with a tap (M1). | **Seed phrase · gas · lookalikes · approvals** → **Fingerprint · 0 gas · names · one exact amount** | "Crypto wallets like MetaMask. A seed phrase you'll lose. Gas you have to buy first. Forty-two-character addresses that scammers copy with lookalikes: that's address poisoning. And 'approve' buttons that can drain a wallet years later. WondrPay has no seed phrase: the key is locked by your fingerprint, on your phone. No gas: we pay it. You pay names, like priya.wondrpay.eth, and shops carry a verified badge. And there are no approvals at all. You sign one exact amount, to one recipient, valid for ten minutes. Even our own relayer can't change where it goes." |
+| 4 | 1:05–1:15 | G6 frozen account (2 s) → **I7** two pipes (4 s) → **I4** anatomy of a payment, fast build (3 s) → D4 explorer with callouts "Gas paid by WondrPay" / "Straight to the shop". | **Not your money** → **Wallet → shop. Nothing in between.** | "Custodial apps like Binance Pay. Easy, but the money isn't yours. Accounts get frozen, and platforms can fail. WondrPay never holds your money. It goes straight from your wallet to the shop's." |
+| 5 | 1:15–1:25 | **I8** checkout table (3 s) → montage, ~1.5 s each, with M2 taps: D5 Autopay toggles on → D11 refund form, PIN (M3) → D13 with callout "Shop decides, on-chain" → D14 +1.65 lands: toast (M10) + odometer (M8). | **Refunds · subscriptions · no gas** | "Crypto checkouts like Coinbase Commerce stop at 'paid'. Refunds are manual, there are no subscriptions, and the customer still needs gas. We ship all three." |
+| 6 | 1:25–1:50 | D10 World ID sheet ("simulated" caption kept) → **I9** wallets collapse into one World ID orb, limit chips, reward budget bar (7 s) → D9 scratch card (M12) → rewards screen (capture 3), card tiles stagger in. | **One real human per account** | "What's new isn't one feature. It's the combination: UPI's two-tap experience, on digital dollars, with one real human behind every account, through World ID. That one rule makes everything else safe. Cashback can't be farmed by bots. Refunds can't be abused by fake accounts. And every reward is paid from fees we've already earned, never from a token we printed." |
+| 7 | 1:50–2:40 | Portal timeline (capture 1) with M14 ticks down the steps → D1 Amaron integration → `dashboard-v2-drawer.png` in a laptop, drawer slides in → **I10** corridor map with arcs and counters (8 s) → **I11** flywheel, one full turn (6 s) → **I12** year-one counters (4 s). | **Shops first** → **Plugin · Shopify · link** → **Gulf → India · Ukraine → EU · dollar savers** → **5,000 shops · 100,000 people · year-one target** | "We go shops first, because shops bring shoppers. A shop joins in minutes with our WooCommerce plugin, a Shopify guide, or just a payment link. No code, no setup fee. We start where people already hold dollars and W Group already has users: Gulf workers paying family in India, Ukrainian freelancers paid in USDT, and savers in Turkey, Nigeria and Argentina. Shoppers come for zero gas and cashback, and stay because it's faster than their bank. Ten free transfers a month to friends pulls in the next user. WhiteBIT is the way in and out: dollars in, rupees and hryvnias out. Year one: 5,000 shops and 100,000 verified people." |
+| 8 | 2:40–2:52 | **I13** road to mainnet: the "live on testnet" row ticks lime, then the three mainnet chips light (M18). | **Audit · On-chain fee · Key recovery** | "For mainnet we have three steps: an audit of our three contracts, the fee split on-chain, and key recovery, so a lost phone isn't lost money. Everything else runs today on Whitechain testnet." |
+| 9 | 2:52–3:00 | **I14** comparison matrix flashes complete (2 s) → three lines stack, one per beat, each underlined in lime → end card `wondrpay-cover.png` (hold 4 s, "0 gas" pill shimmers once). | **Cheaper than cards. Safer than wallets. Yours, unlike exchanges.** | "Cheaper than cards. Safer than wallets. Yours, unlike exchanges. That's WondrPay. Thank you." |
+
+**Pacing rule:** no shot longer than 4 s without movement. If a clip runs long, push in slowly or add a callout. If a scene runs over, cut the generated shot first, never the infographic or the real footage. Demo clips may be sped up to 1.5× (UI footage still reads fine) and trimmed to their key moment; the infographic and callout timings stay fixed.
+
+---
+
+## 6. Generated shot prompts (problem scenes only)
 
 Style for all of them: desaturated grey-blue, soft film grain, shallow depth of field, slow dolly-in, no readable brand names, no faces, 3–5 s each, 16:9.
 
@@ -150,24 +272,7 @@ Style for all of them: desaturated grey-blue, soft film grain, shallow depth of 
 
 ---
 
-## 5. Graphics to build (not generated: exact numbers)
-
-**Comparison card** (use in scene 9's lead-in, or as a full-screen frame between scenes 5 and 6 if time allows). Five columns, WondrPay highlighted in a blue column with lime ticks:
-
-| | Cards | Crypto wallets | Custodial apps | Crypto checkouts | **WondrPay** |
-|---|---|---|---|---|---|
-| Shop fee | 2–3% | n/a | low | ~1% | **0.5%** |
-| Money arrives | 2–7 days | seconds | inside the app | seconds | **seconds, own wallet** |
-| Who holds it | bank | you | platform | you | **you** |
-| Seed phrase / gas | no / n/a | yes / yes | no / no | yes / yes | **no / no** |
-| Refunds | chargebacks | manual | in-app | manual | **with proof, on-chain** |
-| Bot-proof rewards | no | no | KYC | no | **one human (World ID)** |
-
-**Fee bar** ($100 shop payment, horizontal bars growing left to right): Cards **$2–3** (grey) · WondrPay **$0.50** (blue) split into gas **$0.04**, shopper cashback **$0.23**, WondrPay **$0.23**.
-
----
-
-## 6. Facts you may show (and what backs them)
+## 7. Facts you may show (and what backs them)
 
 | On screen | Source / status |
 |---|---|
@@ -178,11 +283,15 @@ Style for all of them: desaturated grey-blue, soft film grain, shallow depth of 
 | $0.04 gas / $0.23 cashback / $0.23 margin per $100 | `economicsPer100()` at 5 gwei, WBT ~$73 |
 | One human per account, up to 5 wallets | World ID; the approval in D10 is simulated |
 | 5,000 shops, 100,000 people | **Year-one target**, label it so |
+| 5 reward claims a day, $5 a month per person | `ECON.humanClaimsPerDay`, `ECON.humanMonthlyCapMicro` |
+| Reward budget = 50% of (fee − gas) | `rewardBudgetMicro()` in `packages/shared/src/rewards.ts` |
+| $685B sent home a year, ~6% average cost | **Verify**: World Bank (2024 figure, cost a little over 6%) |
+| Gulf sends 38% of India's remittances | **Verify**: RBI remittances survey, March 2025 bulletin (FY24) |
 | UPI 25.5 billion payments in a month | **Verify** on NPCI's monthly statistics before publishing |
 
 ---
 
-## 7. Short prompt (for tools with a character limit)
+## 8. Short prompt (for tools with a character limit)
 
 ```
 3-minute 16:9 pitch film for WondrPay, "UPI for digital dollars": pay shops and friends in USDT on
@@ -194,15 +303,18 @@ in color. Then: one real human per account (World ID) stops bot cashback and fak
 go-to-market: shops first, WooCommerce plugin and payment links, corridors Gulf→India, Ukraine→EU,
 dollar savers; year-one target 5,000 shops, 100,000 people. Close: "Cheaper than cards. Safer than
 wallets. Yours, unlike exchanges." Look: navy #0B0D14, blue #2448FF, lime #DDF05A accents, Manrope,
-springy motion, minimal electronic music, warm confident voiceover from my script. Label it "live on
-Whitechain testnet".
+springy motion, minimal electronic music, warm confident voiceover from my script. Add micro-animations
+on the real footage (tap circles, PIN dots, fingerprint trace, QR sweep, trust checks ticking, balance
+odometer, callout pins) and animated infographics between scenes (fee bars per $100, days vs seconds,
+payment flow diagram, wallets collapsing into one World ID, corridor map, growth flywheel, comparison
+matrix). Label it "live on Whitechain testnet".
 ```
 
 ---
 
-## 8. Delivery checklist
+## 9. Delivery checklist
 
-- [ ] Runs 3:00 ±5 s; voiceover matches section 3 word for word.
+- [ ] Runs 3:00 ±5 s; voiceover matches section 5 word for word.
 - [ ] Every product shot is real footage or a real screenshot (no generated UI).
 - [ ] "Simulated" caption kept on the World App approval (D10).
 - [ ] "Live on Whitechain testnet" appears at least once; "year-one target" is on the 5,000 / 100,000 frame.
