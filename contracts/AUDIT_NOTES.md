@@ -6,7 +6,7 @@ These notes cover `src/ProtectedEscrow.sol`, the WondrPay Protected Pay escrow. 
 
 | Check | Result |
 |---|---|
-| Unit and attack tests (`test/ProtectedEscrow.t.sol`) | 69 passed |
+| Unit and attack tests (`test/ProtectedEscrow.t.sol`) | 72 passed (after the 10 Nov loophole fixes: rules E6, E8, E9, E10 in docs/rules/WONDRPAY_RULES.md) |
 | Fuzz test on money conservation (`testFuzz_settleConservesMoney`) | Passed, 256 runs |
 | Invariant tests (`test/ProtectedEscrow.invariant.t.sol`) | 4 invariants hold over 256 runs × 500 calls (128,000 random actions, 0 reverts) |
 | Fork test on Whitechain Sepolia against the real USDT `0xcedf…55a7` (`test/ProtectedEscrow.fork.t.sol`) | Passed: fund via EIP-3009, deliver, dispute, partial offer, accept |

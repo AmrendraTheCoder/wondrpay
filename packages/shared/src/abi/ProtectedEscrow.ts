@@ -1631,6 +1631,11 @@ export const ProtectedEscrowAbi = [
   },
   {
     "type": "error",
+    "name": "OfferAlreadyMade",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "OfferExpired",
     "inputs": []
   },

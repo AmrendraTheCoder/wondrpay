@@ -17,7 +17,7 @@ import {IERC3009} from "./interfaces/IERC3009.sol";
 ///  Lifecycle (see docs/protected-pay/BUILD_PLAN.md):
 ///   Funded --markDelivered--> Delivered --(buyer silent)--> Released
 ///   Funded --(seller late)--> Refunded            Delivered --openDispute--> Disputed
-///   Disputed --agree / seller silent--> Refunded   Disputed --acceptPartial / buyer silent on offer--> Settled
+///   Disputed --agree / seller silent--> Refunded   Disputed --acceptPartial--> Settled ; (buyer silent on offer) --> Escalated
 ///   Disputed --contest / escalate--> Escalated --rule--> Settled ; (arbiter silent) --> Refunded
 ///
 ///  Trust model:
@@ -126,7 +126,7 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
 
     uint32 public constant MIN_DELIVER = 1 hours;
     uint32 public constant MAX_DELIVER = 30 days;
-    uint32 public constant MIN_INSPECT = 1 hours;
+    uint32 public constant MIN_INSPECT = 1 days; // a buyer always gets at least a day to check the goods
     uint32 public constant MAX_INSPECT = 14 days;
     uint32 public constant MIN_RESPOND = 1 days;
     uint32 public constant MAX_RESPOND = 7 days;
@@ -205,6 +205,7 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
     error TimelockActive();
     error NoPendingArbiter();
     error NothingOwed();
+    error OfferAlreadyMade();
 
     // ----------------------------------------------------------- constructor
 
@@ -438,7 +439,8 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
             d.deadline = until;
             emit Delivered(dealId, until);
         } else if (kind == ActionKind.Release) {
-            _require(s == State.Funded || s == State.Delivered);
+            // the buyer may always concede and pay the seller, even mid-dispute
+            _require(s == State.Funded || s == State.Delivered || s == State.Disputed || s == State.Escalated);
             _settle(dealId, d, 0, State.Released, actor);
         } else if (kind == ActionKind.OpenDispute) {
             _require(s == State.Delivered);
@@ -448,7 +450,8 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
             d.deadline = by;
             emit DisputeOpened(dealId, by);
         } else if (kind == ActionKind.AgreeRefund) {
-            _require(s == State.Funded || s == State.Delivered || s == State.Disputed);
+            // the seller may always concede and refund in full, even after escalation
+            _require(s == State.Funded || s == State.Delivered || s == State.Disputed || s == State.Escalated);
             _settle(dealId, d, d.amount, State.Refunded, actor);
         } else if (kind == ActionKind.CancelBySeller) {
             _require(s == State.Funded);
@@ -456,10 +459,12 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
         } else if (kind == ActionKind.OfferPartial) {
             _require(s == State.Disputed);
             _beforeDeadline(d);
+            // One offer per dispute: otherwise a seller could re-offer forever and stall the refund.
+            if (d.offeredRefund != 0) revert OfferAlreadyMade();
             if (amount == 0 || amount >= d.amount) revert BadSplit();
             uint64 by = uint64(block.timestamp) + d.respondWithin;
             d.offeredRefund = amount;
-            d.deadline = by; // the payer now has respondWithin to accept or escalate
+            d.deadline = by; // the payer now has respondWithin to accept or escalate (bounded: once)
             emit PartialOffered(dealId, amount, by);
         } else if (kind == ActionKind.AcceptPartial) {
             _require(s == State.Disputed && d.offeredRefund > 0);
@@ -492,7 +497,8 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
 
     /// @notice Anyone may enforce an expired deadline. Never paused.
     ///  Funded -> Refunded (seller late) · Delivered -> Released (buyer silent)
-    ///  Disputed -> Refunded (seller silent) or Settled at the offer (buyer silent on a partial offer)
+    ///  Disputed -> Refunded (seller silent), or Escalated to the arbiter (buyer silent on a partial offer:
+    ///  silence never accepts a lowball offer)
     ///  Escalated -> Refunded (arbiter silent)
     function poke(bytes32 dealId) external nonReentrant {
         Deal storage d = _deals[dealId];
@@ -502,7 +508,7 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
         if (s == State.Delivered) {
             _settle(dealId, d, 0, State.Released, msg.sender);
         } else if (s == State.Disputed && d.offeredRefund > 0) {
-            _settle(dealId, d, d.offeredRefund, State.Settled, msg.sender);
+            _escalate(dealId, d, true);
         } else {
             _settle(dealId, d, d.amount, State.Refunded, msg.sender);
         }

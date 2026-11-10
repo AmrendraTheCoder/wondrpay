@@ -53,7 +53,7 @@ contract EscrowHandler is Test {
             payer: address(0),
             amount: amount,
             deliverWithin: uint32(bound(t1, 1 hours, 30 days)),
-            inspectFor: uint32(bound(t2, 1 hours, 14 days)),
+            inspectFor: uint32(bound(t2, 1 days, 14 days)),
             respondWithin: uint32(bound(t3, 1 days, 7 days)),
             offerExpiry: uint64(block.timestamp + 1 days),
             offerId: bytes32(++salt)
@@ -77,7 +77,7 @@ contract EscrowHandler is Test {
     function release(uint256 seed) external {
         if (ids.length == 0) return;
         (bytes32 id, ProtectedEscrow.Deal memory d) = _pick(seed);
-        if (d.state != ProtectedEscrow.State.Funded && d.state != ProtectedEscrow.State.Delivered) return;
+        if (d.state == ProtectedEscrow.State.None || d.state >= ProtectedEscrow.State.Released) return;
         vm.prank(d.payer);
         esc.release(id);
         _closed(id, d);
@@ -94,7 +94,7 @@ contract EscrowHandler is Test {
     function offerPartial(uint256 seed, uint128 r) external {
         if (ids.length == 0) return;
         (bytes32 id, ProtectedEscrow.Deal memory d) = _pick(seed);
-        if (d.state != ProtectedEscrow.State.Disputed || block.timestamp > d.deadline || d.amount < 2) return;
+        if (d.state != ProtectedEscrow.State.Disputed || block.timestamp > d.deadline || d.amount < 2 || d.offeredRefund != 0) return;
         r = uint128(bound(r, 1, d.amount - 1));
         vm.prank(d.payee);
         esc.offerPartial(id, r);
@@ -112,10 +112,7 @@ contract EscrowHandler is Test {
     function agree(uint256 seed) external {
         if (ids.length == 0) return;
         (bytes32 id, ProtectedEscrow.Deal memory d) = _pick(seed);
-        if (
-            d.state != ProtectedEscrow.State.Funded && d.state != ProtectedEscrow.State.Delivered
-                && d.state != ProtectedEscrow.State.Disputed
-        ) return;
+        if (d.state == ProtectedEscrow.State.None || d.state >= ProtectedEscrow.State.Released) return;
         vm.prank(d.payee);
         esc.agreeRefund(id);
         _closed(id, d);
@@ -145,7 +142,7 @@ contract EscrowHandler is Test {
         if (d.state == ProtectedEscrow.State.None || d.state >= ProtectedEscrow.State.Released) return;
         if (block.timestamp <= d.deadline) return;
         esc.poke(id);
-        _closed(id, d);
+        if (esc.getDeal(id).state >= ProtectedEscrow.State.Released) _closed(id, d);
     }
 
     function warp(uint256 secs) external {

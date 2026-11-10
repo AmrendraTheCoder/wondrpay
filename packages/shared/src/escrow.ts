@@ -6,7 +6,7 @@ import { WHITECHAIN_CHAIN_ID, USDT_DOMAIN, RECEIVE_WITH_AUTHORIZATION_TYPES } fr
 export { ProtectedEscrowAbi as ESCROW_ABI } from "./abi/ProtectedEscrow"
 
 /** Whitechain Sepolia deployment (deployments/1874.json → contracts.ProtectedEscrow). Testnet roles = deployer. */
-export const ESCROW_ADDRESS: Address = "0xBbE402F5c137AEc229c801d7F89ba3dD384fB649"
+export const ESCROW_ADDRESS: Address = "0x9Ef5850b2E526CB9D40784f21B042BDd9aa7E24d"
 
 // ------------------------------------------------------------------ enums (same order as Solidity)
 export enum DealState { None, Funded, Delivered, Disputed, Escalated, Released, Refunded, Settled }
@@ -35,7 +35,7 @@ const D = 86_400
 /** mirrors the contract's immutable bounds */
 export const DEAL_BOUNDS = {
   deliverWithin: { min: 1 * H, max: 30 * D },
-  inspectFor: { min: 1 * H, max: 14 * D },
+  inspectFor: { min: 1 * D, max: 14 * D },
   respondWithin: { min: 1 * D, max: 7 * D },
   arbiterWindow: 7 * D,
   maxFeeBps: 200,
@@ -137,10 +137,10 @@ export function splitPreview(amount: bigint, fee: bigint, payerShare: bigint) {
 export function describeAction(kind: ActionKind, p: { amount: string; counterparty: string; refund?: string }) {
   switch (kind) {
     case ActionKind.MarkDelivered: return `You confirm you delivered. ${p.counterparty} then has a few days to check it.`
-    case ActionKind.Release: return `Release ${p.amount} to ${p.counterparty} now. This can't be undone.`
+    case ActionKind.Release: return `Release ${p.amount} to ${p.counterparty} now. This also ends any complaint, and it can't be undone.`
     case ActionKind.OpenDispute: return `Report a problem. ${p.counterparty} must answer, or you get an automatic refund.`
     case ActionKind.AgreeRefund: return `Refund ${p.counterparty} in full. This can't be undone.`
-    case ActionKind.OfferPartial: return `Offer ${p.refund} back to ${p.counterparty}. If they don't answer, it's accepted.`
+    case ActionKind.OfferPartial: return `Offer ${p.refund} back to ${p.counterparty}. You can make only one offer. If they don't answer, the dispute desk decides.`
     case ActionKind.AcceptPartial: return `Accept ${p.refund} back and close the deal.`
     case ActionKind.Contest: return `Disagree and send it to the WondrPay dispute desk.`
     case ActionKind.Escalate: return `Reject the offer and send it to the WondrPay dispute desk.`

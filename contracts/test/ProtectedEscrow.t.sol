@@ -212,15 +212,31 @@ contract ProtectedEscrowTest is Test {
         _assertBalances(60e6 + (FEE - feeKept), 120e6, feeKept);
     }
 
-    function test_dispute_partialOffered_buyerSilent_settlesAtOffer() public {
+    function test_dispute_partialOffered_buyerSilent_escalatesNotAccepted() public {
         bytes32 id = _disputed();
         vm.prank(payee);
-        esc.offerPartial(id, 60e6);
+        esc.offerPartial(id, 1); // a lowball offer: 1 unit back
         vm.warp(block.timestamp + D3 + 1);
-        esc.poke(id);
+        esc.poke(id); // silence must NOT accept the lowball offer
+        assertEq(uint8(_state(id)), uint8(ProtectedEscrow.State.Escalated));
+        assertEq(esc.getDeal(id).offeredRefund, 1, "offer kept for the arbiter");
+        vm.prank(arbiter);
+        esc.rule(id, 60e6);
         uint256 feeKept = FEE * 120e6 / AMOUNT;
-        assertEq(uint8(_state(id)), uint8(ProtectedEscrow.State.Settled));
         _assertBalances(60e6 + (FEE - feeKept), 120e6, feeKept);
+    }
+
+    function test_offerPartial_onlyOnce_noEndlessStalling() public {
+        bytes32 id = _disputed();
+        vm.prank(payee);
+        esc.offerPartial(id, 10e6);
+        vm.warp(block.timestamp + D3 - 1);
+        vm.prank(payee);
+        vm.expectRevert(ProtectedEscrow.OfferAlreadyMade.selector);
+        esc.offerPartial(id, 20e6); // can't reset the clock again
+        vm.warp(block.timestamp + 2);
+        esc.poke(id);
+        assertEq(uint8(_state(id)), uint8(ProtectedEscrow.State.Escalated));
     }
 
     function test_dispute_sellerSilent_pokeRefunds() public {
@@ -530,6 +546,9 @@ contract ProtectedEscrowTest is Test {
         ProtectedEscrow.Offer memory o2 = _offer(address(0), AMOUNT, "inspect");
         o2.inspectFor = 15 days;
         _expectBadTimer(o2);
+        ProtectedEscrow.Offer memory o4 = _offer(address(0), AMOUNT, "short-inspect");
+        o4.inspectFor = 23 hours; // a buyer always gets at least a day
+        _expectBadTimer(o4);
         ProtectedEscrow.Offer memory o3 = _offer(address(0), AMOUNT, "respond");
         o3.respondWithin = 23 hours;
         _expectBadTimer(o3);
@@ -702,14 +721,40 @@ contract ProtectedEscrowTest is Test {
         esc.markDelivered(id); // twice
     }
 
-    function test_escalated_partiesCannotSettleAlone() public {
-        bytes32 id = _escalated();
+    function test_buyerCanConcede_midDisputeAndEscalation() public {
+        bytes32 a = _disputed();
         vm.prank(payer);
-        vm.expectRevert(ProtectedEscrow.WrongState.selector);
-        esc.release(id);
+        esc.release(a); // buyer withdraws the complaint
+        assertEq(uint8(_state(a)), uint8(ProtectedEscrow.State.Released));
+
+        bytes32 b = _fundOffer(_offer(address(0), 10e6, keccak256("b")), payerPk);
         vm.prank(payee);
-        vm.expectRevert(ProtectedEscrow.WrongState.selector);
+        esc.markDelivered(b);
+        vm.prank(payer);
+        esc.openDispute(b);
+        vm.prank(payee);
+        esc.contest(b);
+        vm.prank(payer);
+        esc.release(b);
+        assertEq(uint8(_state(b)), uint8(ProtectedEscrow.State.Released));
+    }
+
+    function test_sellerCanConcede_afterEscalation() public {
+        bytes32 id = _escalated();
+        vm.prank(payee);
         esc.agreeRefund(id);
+        assertEq(uint8(_state(id)), uint8(ProtectedEscrow.State.Refunded));
+        _assertBalances(AMOUNT + FEE, 0, 0);
+    }
+
+    function test_escalated_partiesCannotTakeFromEachOther() public {
+        bytes32 id = _escalated();
+        vm.prank(payee);
+        vm.expectRevert(ProtectedEscrow.NotParty.selector);
+        esc.release(id); // seller can't release to himself
+        vm.prank(payer);
+        vm.expectRevert(ProtectedEscrow.NotParty.selector);
+        esc.agreeRefund(id); // buyer can't refund herself
     }
 
     function test_badPartialAmounts() public {
