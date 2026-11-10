@@ -17,7 +17,7 @@ import { usdt, short, when } from "@/lib/format"
 import { playSound } from "@/lib/sound"
 import { settle, SettleError } from "@/lib/settle"
 import { friendlyError } from "@/lib/errors"
-import { autoSentence, days, timeLeft, STATE_LABEL, termsAccepted, acceptTerms, type DealView, type Role } from "@/lib/deals"
+import { usdtExact, autoSentence, days, timeLeft, STATE_LABEL, termsAccepted, acceptTerms, type DealView, type Role } from "@/lib/deals"
 
 type Pending =
   | { type: "fund" }
@@ -40,6 +40,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
   const [showPartial, setShowPartial] = useState(false)
   const [msg, setMsg] = useState("")
   const [proof, setProof] = useState("")
+  const [copied, setCopied] = useState(false)
   const [ruling, setRuling] = useState("")
 
   const load = useCallback(async () => {
@@ -158,7 +159,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
   const act = (kind: ActionKind, amount?: bigint) => setPending({ type: "act", kind, amount })
   const counterparty = role === "seller" ? buyerName || "the buyer" : sellerName
   const sheetText = (p: Pending) => {
-    if (p.type === "fund") return { title: `Pay ${usdt(deal.total)} USDT into protection`, subtitle: `It's released to ${sellerName} only when you confirm, or if you don't report a problem in time.` }
+    if (p.type === "fund") return { title: `Pay ${usdtExact(deal.total)} USDT into protection`, subtitle: `It's released to ${sellerName} only when you confirm, or if you don't report a problem in time.` }
     if (p.type === "message") return { title: "Sign your message", subtitle: "It's stored with your signature and can't be edited later." }
     return { title: "Confirm", subtitle: describeAction(p.kind, { amount: `${usdt(deal.amount)} USDT`, counterparty, refund: `${usdt(p.amount ?? offered)} USDT` }) }
   }
@@ -166,6 +167,9 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
   const rulingOk = /^\d+(\.\d{1,6})?$/.test(ruling) && parseUnits(ruling, 6) <= BigInt(deal.amount)
   const rulingSplit = rulingOk ? splitPreview(BigInt(deal.amount), BigInt(deal.fee), parseUnits(ruling, 6)) : null
   const split = offered > 0n ? splitPreview(BigInt(deal.amount), BigInt(deal.fee), offered) : null
+  const outcome = deal.state === DealState.Released ? `The seller received ${usdt(deal.amount)} USDT. Final.`
+    : deal.state === DealState.Refunded ? `The buyer got ${usdtExact(deal.total)} USDT back, fee included. Final.`
+    : "The amount was split between buyer and seller. Final."
   const canTalk = role !== "visitor" && (deal.state === DealState.Disputed || deal.state === DealState.Escalated || deal.events.length > 0)
 
   return (
@@ -182,12 +186,12 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
         <div className="deal-amount">{usdt(deal.amount)} <small>USDT</small></div>
         <div className="deal-party">
           <Identicon seed={deal.payee} name={names[deal.payee]} size={40} />
-          <div><b>{sellerName}</b><div className="sub">Seller · <span className="mono">{short(deal.payee)}</span></div></div>
+          <div><b>{names[deal.payee] || (role === "seller" ? "You" : "Seller")}</b><div className="sub">{names[deal.payee] ? "Seller · " : role === "seller" ? "Seller · " : ""}<span className="mono">{short(deal.payee)}</span></div></div>
         </div>
         {funded && deal.payer && (
           <div className="deal-party">
             <Identicon seed={deal.payer} name={names[deal.payer]} size={40} />
-            <div><b>{buyerName}</b><div className="sub">Buyer · <span className="mono">{short(deal.payer)}</span></div></div>
+            <div><b>{names[deal.payer] || (role === "buyer" ? "You" : "Buyer")}</b><div className="sub">{names[deal.payer] ? "Buyer · " : role === "buyer" ? "Buyer · " : ""}<span className="mono">{short(deal.payer)}</span></div></div>
           </div>
         )}
       </div>
@@ -208,13 +212,18 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
         <div className="stack">
           {/* not funded yet */}
           {!funded && offerExpired && <div className="deal-note bad">This deal link expired before anyone paid. Ask the seller for a new one.</div>}
-          {!funded && !offerExpired && role === "seller" && <div className="deal-note">Waiting for a buyer. Share this page's link with them. It stays valid until {when(deal.terms.offerExpiry)}.</div>}
+          {!funded && !offerExpired && role === "seller" && (
+            <>
+              <div className="deal-note">Waiting for a buyer. Send them this page's link. It stays valid until {when(deal.terms.offerExpiry)}.</div>
+              <button className="btn btn-primary" onClick={async () => { try { await navigator.clipboard.writeText(location.href); setCopied(true); setTimeout(() => setCopied(false), 1600) } catch {} }}>{copied ? "Copied" : "Copy deal link"}</button>
+            </>
+          )}
           {!funded && !offerExpired && role !== "seller" && (
             <>
               <div className="card kv">
                 <div className="row"><span className="sub">Price</span><span>{usdt(deal.amount)} USDT</span></div>
-                <div className="row"><span className="sub">Protection fee</span><span>{usdt(deal.fee)} USDT</span></div>
-                <div className="row"><b>You pay</b><b>{usdt(deal.total)} USDT</b></div>
+                <div className="row"><span className="sub">Protection fee</span><span>{usdtExact(deal.fee)} USDT</span></div>
+                <div className="row"><b>You pay</b><b>{usdtExact(deal.total)} USDT</b></div>
                 <div className="sub">The fee is returned to you if the deal is refunded. You pay no network fee.</div>
               </div>
               <ul className="deal-rules">
@@ -257,8 +266,8 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
           {role === "buyer" && deal.state === DealState.Disputed && split && (
             <div className="card kv">
               <div className="row"><b>The seller offers a partial refund</b></div>
-              <div className="row"><span className="sub">You get back</span><b>{usdt(split.payerGets)} USDT</b></div>
-              <div className="row"><span className="sub">Seller keeps</span><span>{usdt(split.payeeGets)} USDT</span></div>
+              <div className="row"><span className="sub">You get back</span><b>{usdtExact(split.payerGets)} USDT</b></div>
+              <div className="row"><span className="sub">Seller keeps</span><span>{usdtExact(split.payeeGets)} USDT</span></div>
               <button className="btn btn-primary" onClick={() => act(ActionKind.AcceptPartial)}>Accept and close</button>
               {!overdue && <button className="btn btn-ghost" onClick={() => act(ActionKind.Escalate)}>Reject: send to the dispute desk</button>}
             </div>
@@ -302,9 +311,9 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
           <Step done={deal.state >= DealState.Delivered && deal.state !== DealState.Refunded} now={deal.state === DealState.Funded} title="Seller delivers" sub={deal.state === DealState.Funded ? `Due ${when(deal.deadline)}` : `Within ${days(deal.terms.deliverWithin)}`} />
           <Step done={isClosed(deal.state)} now={deal.state === DealState.Delivered} title="Buyer checks and confirms" sub={deal.state === DealState.Delivered ? `Until ${when(deal.deadline)}` : `${days(deal.terms.inspectFor)} to check`} />
           {(deal.state === DealState.Disputed || deal.state === DealState.Escalated) && <Step done={false} now title={deal.state === DealState.Disputed ? "Problem reported" : "Dispute desk is deciding"} sub={`Until ${when(deal.deadline)}`} />}
-          {isClosed(deal.state) && <Step done now={false} title={label.text} sub="Final. Paid out on Whitechain." />}
+          {isClosed(deal.state) && <Step done now={false} title={label.text} sub={outcome} />}
         </ol>
-        {deal.fundTx && <a className="chip mt-2" href={`${EXPLORER_URL}/tx/${deal.fundTx}`} target="_blank" rel="noreferrer">View payment on Whitechain ↗</a>}
+        {deal.fundTx && <a className="chip deal-tx" href={`${EXPLORER_URL}/tx/${deal.fundTx}`} target="_blank" rel="noreferrer">View payment on Whitechain ↗</a>}
       </div>
 
       {/* dispute thread */}
@@ -330,7 +339,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
         </div>
       )}
 
-      <div className="sub center">Deal {short(deal.dealId)} · held by the protection contract <a className="mono" href={`${EXPLORER_URL}/address/${deal.escrow}`} target="_blank" rel="noreferrer">{short(deal.escrow)}</a>, not by WondrPay.</div>
+      <div className="sub center">{isClosed(deal.state) ? "Was held" : "Held"} by the <a href={`${EXPLORER_URL}/address/${deal.escrow}`} target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>protection contract</a> on Whitechain, not by WondrPay.</div>
 
       {pending && (
         <UnlockSheet {...sheetText(pending)} payment={pending.type === "fund" ? { amountMicro: BigInt(deal.total) } : undefined} onUnlocked={run} onCancel={() => setPending(null)} />

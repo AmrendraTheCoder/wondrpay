@@ -2,30 +2,21 @@
 // My protected deals: selling, buying, and the ones waiting on me.
 import "../deal.css"
 import { useEffect, useState } from "react"
-import { DealState, isClosed } from "@whitepay/shared/escrow"
+import { DealState } from "@whitepay/shared/escrow"
 import { TopBar } from "../components"
 import { LogoLoader, Icon } from "../ui"
 import { getWallet } from "@/lib/wallet"
 import { usdt } from "@/lib/format"
-import { STATE_LABEL, timeLeft, type DealView } from "@/lib/deals"
+import { STATE_LABEL, timeLeft, myMove, nextStep, type DealView } from "@/lib/deals"
 
 type Tab = "action" | "selling" | "buying" | "desk"
-
-/** Is it this wallet's move? */
-function myMove(d: DealView, me: string) {
-  const seller = d.payee.toLowerCase() === me, buyer = d.payer?.toLowerCase() === me && d.state !== DealState.None
-  if (isClosed(d.state) || d.state === DealState.None) return false
-  if (Math.floor(Date.now() / 1000) > d.deadline) return true // anyone can enforce it
-  if (seller) return d.state === DealState.Funded || (d.state === DealState.Disputed && d.offeredRefund === "0")
-  if (buyer) return d.state === DealState.Delivered || (d.state === DealState.Disputed && d.offeredRefund !== "0")
-  return false
-}
 
 export default function Deals() {
   const [wallet, setWallet] = useState<ReturnType<typeof getWallet> | undefined>(undefined)
   const [deals, setDeals] = useState<DealView[] | null>(null)
   const [err, setErr] = useState("")
-  const [tab, setTab] = useState<Tab>("action")
+  // null = not chosen yet: open on the first tab that has something in it
+  const [picked, setTab] = useState<Tab | null>(null)
   const [desk, setDesk] = useState<DealView[] | null>(null) // only for the dispute desk wallet
 
   useEffect(() => setWallet(getWallet()), [])
@@ -50,7 +41,10 @@ export default function Deals() {
 
   const me = wallet.address.toLowerCase()
   const action = (deals ?? []).filter((d) => myMove(d, me))
-  const list = tab === "desk" ? (desk ?? []) : tab === "action" ? action : (deals ?? []).filter((d) => (tab === "selling" ? d.payee.toLowerCase() === me : d.payer?.toLowerCase() === me && d.state !== DealState.None))
+  const selling = (deals ?? []).filter((d) => d.payee.toLowerCase() === me)
+  const buying = (deals ?? []).filter((d) => d.payer?.toLowerCase() === me && d.state !== DealState.None)
+  const tab: Tab = picked ?? (action.length ? "action" : selling.length ? "selling" : buying.length ? "buying" : "selling")
+  const list = tab === "desk" ? (desk ?? []) : tab === "action" ? action : tab === "selling" ? selling : buying
   const now = Math.floor(Date.now() / 1000)
 
   return (
@@ -64,22 +58,42 @@ export default function Deals() {
         {desk && <button className={tab === "desk" ? "on" : ""} onClick={() => setTab("desk")}>Desk{desk.length > 0 && <span className="seg-badge" style={{ marginLeft: 6 }}>{desk.length}</span>}</button>}
       </div>
       {err && <div className="deal-note bad" role="alert">{err}</div>}
-      {!deals && !err && <LogoLoader />}
-      {deals && list.length === 0 && (
+      {!deals && !err && (
+        <div className="list" aria-busy="true" aria-label="Loading your deals">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="deal-row"><span className="sub-ic skel" /><div className="grow"><span className="skel" style={{ display: "block", width: "60%", height: 16 }} /><span className="skel" style={{ display: "block", width: "40%", height: 13, marginTop: 6 }} /></div></div>
+          ))}
+        </div>
+      )}
+      {deals && deals.length === 0 && tab !== "desk" ? (
+        <div className="card stack">
+          <h2>How a protected deal works</h2>
+          <ol className="deal-how">
+            <li><b>You create a link</b><span>Set the price and how long you need to deliver.</span></li>
+            <li><b>The buyer pays into protection</b><span>The money is held safely. Nobody can take it early.</span></li>
+            <li><b>You deliver, they confirm</b><span>You're paid when they confirm, or automatically if they stay silent.</span></li>
+          </ol>
+          <a className="btn btn-primary" href="/deal/new">Create a protected deal</a>
+          <div className="sub center">Buying? Open the link the seller sent you.</div>
+        </div>
+      ) : deals && list.length === 0 && (
         <div className="card stack center">
-          <div className="sub">{tab === "desk" ? "No disputes are waiting for a decision." : tab === "action" ? "Nothing is waiting on you." : tab === "selling" ? "You haven't created a protected deal yet." : "You haven't paid for a protected deal yet."}</div>
-          {tab !== "buying" && tab !== "desk" && <a className="btn btn-primary" href="/deal/new">Create a protected deal</a>}
+          <div className="sub">{tab === "desk" ? "No disputes are waiting for a decision." : tab === "action" ? "Nothing is waiting on you. You're all caught up." : tab === "selling" ? "You haven't created a protected deal yet." : "You haven't paid for a protected deal yet. Open the link a seller sent you."}</div>
+          {tab === "selling" && <a className="btn btn-primary" href="/deal/new">Create a protected deal</a>}
         </div>
       )}
       <div className="list">
         {list.map((d) => {
           const label = STATE_LABEL[d.state]
+          const mine = tab !== "desk" && myMove(d, me)
           return (
             <a key={d.dealId} className="deal-row" href={`/d/${d.dealId}`}>
-              <span className="sub-ic">{Icon.shield(24)}</span>
+              <span className={`sub-ic ${mine ? "todo" : ""}`}>{Icon.shield(24)}</span>
               <div className="grow">
                 <b>{d.title}</b>
-                <div className="sub">{label.text}{d.deadline > 0 && (now > d.deadline ? " · deadline passed" : ` · ${timeLeft(d.deadline - now)} left`)}</div>
+                <div className="sub">{mine
+                  ? <span className="deal-todo">{nextStep(d, me)}{now <= d.deadline && ` · ${timeLeft(d.deadline - now)} left`}</span>
+                  : <>{label.text}{d.deadline > 0 && (now > d.deadline ? " · deadline passed" : ` · ${timeLeft(d.deadline - now)} left`)}</>}</div>
               </div>
               <div className="right"><b>{usdt(d.amount)}</b><div className="sub">USDT</div></div>
             </a>

@@ -1,6 +1,6 @@
 "use client"
 // Client helpers for protected deals: the shapes the API returns and plain-language wording.
-import { DealState } from "@whitepay/shared/escrow"
+import { DealState, isClosed } from "@whitepay/shared/escrow"
 
 export type DealEventView = { key: string; actor: string; role: "payer" | "payee" | "arbiter"; kind: string; text: string; evidence?: string; at: number }
 export type DealView = {
@@ -49,3 +49,28 @@ export function autoSentence(d: DealView, role: Role, left: string) {
 const TERMS_KEY = "whitepay.deal-terms.v1"
 export const termsAccepted = () => { try { return localStorage.getItem(TERMS_KEY) === "1" } catch { return false } }
 export const acceptTerms = () => { try { localStorage.setItem(TERMS_KEY, "1") } catch {} }
+
+/** Is it this wallet's move on this deal? (also true once a deadline passed: anyone can enforce it) */
+export function myMove(d: DealView, me: string) {
+  const seller = d.payee.toLowerCase() === me, buyer = d.payer?.toLowerCase() === me && d.state !== DealState.None
+  if (isClosed(d.state) || d.state === DealState.None || (!seller && !buyer)) return false
+  if (Math.floor(Date.now() / 1000) > d.deadline) return true
+  if (seller) return d.state === DealState.Funded || (d.state === DealState.Disputed && d.offeredRefund === "0")
+  return d.state === DealState.Delivered || (d.state === DealState.Disputed && d.offeredRefund !== "0")
+}
+
+/** What this wallet should do next, in a few words (for lists and the home banner). */
+export function nextStep(d: DealView, me: string) {
+  const seller = d.payee.toLowerCase() === me
+  if (Math.floor(Date.now() / 1000) > d.deadline) return "Deadline passed: enforce it"
+  if (seller) return d.state === DealState.Funded ? "Deliver, then mark it delivered" : "Answer the buyer's complaint"
+  return d.state === DealState.Delivered ? "Check it and release the payment" : "Answer the seller's offer"
+}
+
+/** Exact USDT for money a person is about to pay or receive: at least 2 decimals, never rounded away
+ *  (the shared `usdt` cuts to 2 decimals, which would show 25.125 as 25.12). */
+export function usdtExact(v: string | bigint) {
+  const n = BigInt(v), whole = n / 1_000_000n
+  const frac = (n % 1_000_000n).toString().padStart(6, "0").replace(/0{1,4}$/, "")
+  return `${whole.toLocaleString("en-IN")}.${frac}`
+}

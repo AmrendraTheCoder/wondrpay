@@ -36,3 +36,19 @@
 .deal-row { display: flex; align-items: center; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--line); min-width: 0; }
 .deal-row .grow { flex: 1; min-width: 0; }
 .deal-row .grow b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* polish */
+.deal-tx { display: inline-flex; margin-top: 16px; }
+.deal-field small { font-size: 13px; }
+.deal-how { list-style: none; counter-reset: how; margin: 0; padding: 0; display: grid; gap: 14px; }
+.deal-how li { counter-increment: how; display: grid; grid-template-columns: 28px 1fr; column-gap: 12px; row-gap: 2px; }
+.deal-how li::before { content: counter(how); grid-row: span 2; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; background: color-mix(in oklab, var(--brand) 22%, transparent); color: var(--brand-soft); }
+.deal-how li span { grid-column: 2; color: var(--muted); font-size: 14px; line-height: 1.4; }
+.deal-row { transition: background .2s, transform .14s cubic-bezier(.3, 1.6, .5, 1); border-radius: var(--r-md, 16px); padding: 14px 8px; }
+.deal-row:active { transform: scale(.98); background: var(--surface-2); }
+.deal-row .sub-ic.todo { background: var(--lime); color: var(--lime-ink); }
+.deal-todo { color: var(--text); font-weight: 600; }
+.deal-note, .deal-steps li, .deal-msg { animation: deal-in .28s ease-out both; }
+/* movement only: the content is never hidden, even if the browser pauses animations (background tab, low power) */
+@keyframes deal-in { from { transform: translateY(6px); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .deal-note, .deal-steps li, .deal-msg { animation: none; } .deal-row { transition: none; } }

@@ -61,7 +61,10 @@ function apiGuard(req: NextRequest): NextResponse | null {
     if (!(req.headers.get("content-type") ?? "").startsWith("application/json"))
       return NextResponse.json({ error: "content-type must be application/json" }, { status: 415 })
     const origin = req.headers.get("origin")
-    if (origin && origin !== req.nextUrl.origin && !CROSS_ORIGIN_WRITES.some((p) => pathname.startsWith(p)))
+    // local development only: the dev server can report a different origin than the browser's address bar
+    // (preview panes, 127.0.0.1 vs localhost), so there the Host header is accepted as the same site too
+    const devSameHost = dev && !!origin && [req.headers.get("host"), req.headers.get("x-forwarded-host")].includes(origin.replace(/^https?:\/\//, ""))
+    if (origin && origin !== req.nextUrl.origin && !devSameHost && !CROSS_ORIGIN_WRITES.some((p) => pathname.startsWith(p)))
       return NextResponse.json({ error: "cross-site request blocked" }, { status: 403 })
   }
 

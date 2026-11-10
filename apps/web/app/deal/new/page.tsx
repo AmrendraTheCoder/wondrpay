@@ -11,7 +11,7 @@ import { LogoLoader, Icon } from "../../ui"
 import { getWallet } from "@/lib/wallet"
 import { usdt } from "@/lib/format"
 import { friendlyError } from "@/lib/errors"
-import { days, termsAccepted, acceptTerms } from "@/lib/deals"
+import { days, termsAccepted, acceptTerms, usdtExact } from "@/lib/deals"
 
 const D = 86_400
 const DELIVER = [1 * D, 3 * D, 7 * D, 14 * D]
@@ -51,6 +51,9 @@ export default function NewDeal() {
   const overCap = !!settings && amount > BigInt(settings.maxDealAmount)
   const fee = settings ? dealFee(amount, settings.feeBps) : 0n
   const ready = title.trim().length > 0 && validPrice && !overCap && agree && !settings?.paused && !settings?.blocked
+
+  // why the button is off, one thing at a time
+  const missing = settings?.blocked || settings?.paused ? null : !title.trim() ? "Add what you're selling to continue." : !validPrice ? "Add a price to continue." : overCap ? null : !agree ? "Tick the box to accept the terms." : null
 
   const create = async (account: PrivateKeyAccount) => {
     setUnlock(false); setBusy(true); setErr("")
@@ -141,14 +144,15 @@ export default function NewDeal() {
         </div>
         <label className="deal-field">
           <span>Only this buyer (optional)</span>
-          <input className="input" value={buyer} placeholder="Name or address. Empty = anyone with the link" autoCapitalize="none" spellCheck={false} onChange={(e) => setBuyer(e.target.value)} />
+          <input className="input" value={buyer} placeholder="Name or address" autoCapitalize="none" spellCheck={false} onChange={(e) => setBuyer(e.target.value)} />
+          <small className="sub">Leave it empty and anyone with the link can pay.</small>
         </label>
       </div>
 
       {validPrice && !overCap && (
         <div className="card kv">
           <div className="row"><span className="sub">You receive</span><b>{usdt(amount)} USDT</b></div>
-          <div className="row"><span className="sub">Buyer pays</span><span>{usdt(amount + fee)} USDT</span></div>
+          <div className="row"><span className="sub">Buyer pays</span><span>{usdtExact(amount + fee)} USDT</span></div>
           <div className="sub">The buyer pays a {settings ? settings.feeBps / 100 : 0.5}% protection fee on top. It's returned to them if the deal is refunded.</div>
         </div>
       )}
@@ -157,9 +161,9 @@ export default function NewDeal() {
         <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
         <span>I agree to the <a href="/protected-terms" target="_blank">Protected Pay terms</a>, including how deadlines and disputes are decided.</span>
       </label>
-      <div className="err" role="alert">{err}</div>
+      {err && <div className="deal-note bad" role="alert">{err}</div>}
       <button className="btn btn-primary btn-big" disabled={!ready || busy} onClick={() => setUnlock(true)}>{busy ? "Creating…" : "Create protected link"}</button>
-      <div className="sub center">You're promising to deliver within {days(deliverWithin)}. If you don't, the buyer gets an automatic refund.</div>
+      <div className="sub center">{missing ?? `You're promising to deliver within ${days(deliverWithin)}. If you don't, the buyer gets an automatic refund.`}</div>
 
       {unlock && <UnlockSheet title="Sign this offer" subtitle={`${title.trim()} for ${price} USDT, delivered within ${days(deliverWithin)}`} onUnlocked={create} onCancel={() => setUnlock(false)} />}
     </main>

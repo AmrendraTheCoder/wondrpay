@@ -1,6 +1,7 @@
 "use client"
 import { useMemo } from "react"
 import { DueBanner } from "../due-banner"
+import { DealsBanner } from "../deals-banner"
 import { AvatarRings } from "../avatar-rings"
 import { Onboard } from "../onboard"
 import { Icon, avatarColor, initial, prettyName, useWalletData, AccountBadge, Toast, useCountUp, LogoLoader, Identicon } from "../ui"
@@ -63,6 +64,7 @@ function WalletHome({ wallet, bal, rows, name, account, displayName, toast }: Re
       </div>
 
       <DueBanner address={wallet.address} />
+      <DealsBanner address={wallet.address} />
 
       {name === null && account !== "business" && (
         <a className="card row claim-card" href="/you#claim">
