@@ -752,11 +752,6 @@ export const ProtectedEscrowAbi = [
             "name": "offeredRefund",
             "type": "uint128",
             "internalType": "uint128"
-          },
-          {
-            "name": "fundedAt",
-            "type": "uint64",
-            "internalType": "uint64"
           }
         ]
       }

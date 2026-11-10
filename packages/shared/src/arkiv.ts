@@ -297,3 +297,40 @@ export const ShopMember = defineSchema("whitepay.member", {
   updatedAt: u64(),
   approval: bytes(),
 })
+
+// ---------------------------------------------------------------- Protected Pay (see packages/server/src/deals.ts)
+/** The human-readable terms of a protected deal. The contract is the source of truth for money and state;
+ *  this record lets anyone rebuild the signed offer (so the deal link works) and lists "my deals".
+ *  No personal data: only what the seller typed and the wallet addresses already public on-chain. */
+export const Deal = defineSchema("whitepay.deal", {
+  dealId: str().indexed(), // EIP-712 hash of the offer == the id on-chain, lowercase 0x…
+  offerId: str(),
+  payee: addr().indexed(),
+  payer: addr().indexed().optional(), // set once funded (or fixed by the seller)
+  onlyPayer: addr().optional(), // the offer's payer field when the seller limited it to one buyer
+  amount: u256(),
+  title: str(), // <= 80 chars
+  details: str().optional(), // <= 1000 chars
+  deliverWithin: u64(),
+  inspectFor: u64(),
+  respondWithin: u64(),
+  offerExpiry: u64(),
+  payeeSig: bytes(),
+  status: str().indexed(), // "offer" | "open" | "closed": a cache for lists and the keeper, never trusted for money
+  createdAt: u64().indexed(),
+  fundedAt: u64().indexed().optional(),
+  fundTx: str().optional(),
+})
+
+/** One signed message in a deal's dispute thread. Immutable: owned by the burn address after it is written. */
+export const DealEvent = defineSchema("whitepay.dealevt", {
+  dealId: str().indexed(),
+  actor: addr().indexed(),
+  role: str(), // "payer" | "payee" | "arbiter"
+  kind: str().indexed(), // "message" | "evidence" | "ruling_note"
+  text: str(),
+  evidence: str().optional(), // https link
+  at: u64().indexed(),
+  signedAt: u64(),
+  sig: bytes(),
+})

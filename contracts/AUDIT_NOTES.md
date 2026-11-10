@@ -2,7 +2,11 @@
 
 These notes cover `src/ProtectedEscrow.sol`, the WondrPay Protected Pay escrow. The full specification is [docs/protected-pay/BUILD_PLAN.md](../docs/protected-pay/BUILD_PLAN.md), sections 3–4.
 
-## Test evidence (10 Nov 2026)
+## Deployment
+
+Whitechain Sepolia (chain 1874): `0x6260d61536cbc49AC69DF3edEfc0614D79EDb330`, verified, deployed 11 Nov 2026. It replaces `0x9Ef5…E24d`; the only change is the removal of the unused `fundedAt` storage field (gas). The live demo (`scripts/protected-demo.ts`) passed on the new address: one deal released, one settled with a 40% partial refund, a replayed funding rejected, and buyer and seller paid no gas.
+
+## Test evidence (11 Nov 2026)
 
 | Check | Result |
 |---|---|
@@ -11,7 +15,7 @@ These notes cover `src/ProtectedEscrow.sol`, the WondrPay Protected Pay escrow. 
 | Invariant tests (`test/ProtectedEscrow.invariant.t.sol`) | 4 invariants hold over 256 runs × 500 calls (128,000 random actions, 0 reverts) |
 | Fork test on Whitechain Sepolia against the real USDT `0xcedf…55a7` (`test/ProtectedEscrow.fork.t.sol`) | Passed: fund via EIP-3009, deliver, dispute, partial offer, accept |
 | Coverage (`forge coverage --ir-minimum`) | 99.55% lines, 99.63% statements, 98.39% branches, 100% functions |
-| Gas snapshot | `.gas-snapshot-escrow` |
+| Gas snapshot | `.gas-snapshot-escrow`. `fund` costs about 186k in tests and 199k live with the real USDT (it was 206k in tests). |
 
 **Invariants that are checked:**
 1. The escrow's token balance equals exactly the `amount + fee` of all open deals.
@@ -33,7 +37,17 @@ These notes cover `src/ProtectedEscrow.sol`, the WondrPay Protected Pay escrow. 
 - **`arbitrary-send-erc20` in `fundWithPermit`:** `transferFrom(p.payer, …)` runs only after the payer's EIP-712 `FundConsent` signature over this exact `dealId` is verified. A leftover allowance can't be hijacked; this is tested in `test_fundWithPermit_leftoverAllowanceCannotBeHijacked`.
 - **`unsafe-typecast`:** the `uint128` casts are bounded by `hardCap ≤ type(uint128).max / 2`. The `uint64` timestamp casts are safe until the year 2554.
 
-Aderyn hasn't been run yet; that's a to-do before the external audit.
+## Static analysis (Aderyn 0.6.8, 11 Nov 2026)
+
+88 detectors, **0 high** findings, 5 low:
+
+| Finding | Assessment |
+|---|---|
+| L-1 Centralization risk (`onlyOwner` setters) | **By design.** See the trust model below: the owner can't move funds or touch funded deals. Owner becomes a 2-of-3 Safe on mainnet. |
+| L-2 Large numeric literal (`10_000`) | Style only. Basis points are clearer as `10_000`. |
+| L-3 PUSH0 opcode | Whitechain supports it (the contract is deployed and runs). Recheck on any new chain. |
+| L-4 Unsafe ERC20 operation in `_pay` | **Intended.** The low-level call checks both the revert and a `false` return, so a blocked recipient falls back to `owed`/`withdraw` instead of freezing the deal. SafeERC20 would revert. |
+| L-5 Unspecific pragma (`^0.8.24`) | **To do before the audit:** pin the exact compiler version. |
 
 ## Trust model (what the owner can and cannot do)
 
@@ -69,7 +83,8 @@ Aderyn hasn't been run yet; that's a to-do before the external audit.
 
 ## Open items before the external audit
 
-- [ ] Run Aderyn.
-- [ ] Reduce `fund` gas: currently about 206k, against a 150k target. It's dominated by 4 cold storage slots plus EIP-3009 plus two signature checks.
+- [x] Run Aderyn (0 high, 5 low, see above).
+- [ ] Pin the Solidity pragma to the exact version.
+- [x] Reduce `fund` gas: 206k → 186k by dropping `fundedAt`. The 150k target isn't reachable without storing only a hash of the deal (the remaining cost is 3 cold storage slots, the EIP-3009 transfer and two signature checks). Not worth a redesign before the audit; at Whitechain gas prices the difference is a fraction of a cent.
 - [ ] Confirm the **mainnet** USDT address on Whitechain and that it supports EIP-3009, then rerun the fork test on mainnet.
 - [ ] Decide the treasury, arbiter and owner Safes (2-of-3), and check that Safe is deployed on Whitechain.

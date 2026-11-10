@@ -34,3 +34,4 @@ export { listTeam, membershipsOf, roleOf, addTeammate, removeTeammate, MAX_TEAM,
 export { RefundRecord, refundAgent, permitTypedData, allowanceState, setRefundAllowance, refundByApi, allowanceRefunded } from "./refund-allowance"
 export { claimRefund } from "./refund-allowance"
 export { PinRecord, hasSavedPin, checkSavedPin, savePin, PinError } from "./pin"
+export { createDeal, getDeal, listDeals, listEscalated, relayFund, relayAction, relayPoke, pokeDue, postDealEvent, dealSettings, actionNonce, DealError, type DealView, type DealEventView } from "./deals"

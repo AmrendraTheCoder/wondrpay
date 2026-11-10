@@ -1,7 +1,11 @@
 // Gasless relayer with anti-drain policy. The relayer holds only WBT, never USDT.
 import { decodeEventLog, encodeFunctionData, keccak256, parseSignature, type Address, type Hex } from "viem"
 import { LIMITS, ROUTER_ABI, type Order } from "@whitepay/shared"
-import { wc } from "./clients"
+import { Receipt, Deal } from "@whitepay/shared/arkiv"
+import { addr, u64 } from "@arkiv-network/sdk/schema"
+import { and, eq, gte, desc } from "@arkiv-network/sdk/query"
+import { wc, arkiv } from "./clients"
+import { cached, invalidate } from "./cache"
 import { config } from "./config"
 
 export type PayerAuth = { from: Address; validAfter: bigint; validBefore: bigint; signature: Hex }
@@ -12,25 +16,48 @@ export class PolicyError extends Error {
   }
 }
 
-// --- in-memory policy state (swap for Redis/DB in production) ---
+// --- policy state ---
+// The per-minute rate is per server instance (in memory). The DAILY limit is global: it is the larger of this
+// instance's own count and what the payer's Arkiv records show for today (receipts + protected deals funded),
+// so a payer can't get a fresh limit by landing on another instance. Receipts are written a moment after a
+// payment, so two instances can overshoot by the payments made in that moment; the in-memory count covers the
+// instance that just relayed them. If Arkiv can't be read, the instance's own count is used (payments keep working).
 const recent = new Map<string, number[]>() // payer -> timestamps (ms)
 const daily = new Map<string, { day: number; total: bigint }>()
 const RATE = { windowMs: 60_000, max: 5 }
 
-function checkPolicy(payer: Address, amount: bigint) {
+const dayOf = (ms: number) => Math.floor(ms / 86_400_000)
+const val = (x: any) => (x && typeof x === "object" && "value" in x ? x.value : x)
+
+/** What this payer moved today (UTC) according to Arkiv: every instance sees the same records. */
+async function spentTodayGlobal(payer: Address): Promise<bigint> {
+  const start = u64(BigInt(dayOf(Date.now()) * 86_400))
+  return cached(`spent:${payer.toLowerCase()}`, 5_000, async () => {
+    const a = arkiv()
+    const [receipts, deals] = await Promise.all([
+      a.pub.select({ amount: true }).from(Receipt).ownedBy(a.owner).where(and(eq("payer", addr(payer)), gte("paidAt", start)) as never).orderBy(desc("paidAt")).limit(100).fetch(),
+      a.pub.select({ amount: true }).from(Deal).ownedBy(a.owner).where(and(eq("payer", addr(payer)), gte("fundedAt", start)) as never).limit(100).fetch(),
+    ])
+    return [...(receipts.entities as any[]), ...(deals.entities as any[])].reduce((s, e) => s + BigInt(val(e.amount) ?? 0), 0n)
+  })
+}
+
+export async function checkPolicy(payer: Address, amount: bigint) {
   const k = payer.toLowerCase()
   const t = Date.now()
   const hits = (recent.get(k) ?? []).filter((x) => t - x < RATE.windowMs)
   if (hits.length >= RATE.max) throw new PolicyError("rate_limited", `max ${RATE.max} payments per minute per payer`)
 
-  const day = Math.floor(t / 86_400_000)
   const d = daily.get(k)
-  const spent = d && d.day === day ? d.total : 0n
+  const local = d && d.day === dayOf(t) ? d.total : 0n
+  const global = await spentTodayGlobal(payer).catch((e) => { console.warn("daily limit: Arkiv read failed, using this instance's count:", (e as Error).message.split("\n")[0]); return 0n })
+  const spent = local > global ? local : global
   if (spent + amount > LIMITS.dailyPerPayer) throw new PolicyError("daily_limit", "daily limit reached")
 }
 
-function recordSpend(payer: Address, amount: bigint) {
+export function recordSpend(payer: Address, amount: bigint) {
   const k = payer.toLowerCase()
+  invalidate(`spent:${k}`)
   const t = Date.now()
   recent.set(k, [...(recent.get(k) ?? []).filter((x) => t - x < RATE.windowMs), t])
   const day = Math.floor(t / 86_400_000)
@@ -38,7 +65,7 @@ function recordSpend(payer: Address, amount: bigint) {
   daily.set(k, { day, total: (d && d.day === day ? d.total : 0n) + amount })
 }
 
-const toAuthTuple = (a: PayerAuth) => {
+export const toAuthTuple = (a: PayerAuth) => {
   const { r, s, v, yParity } = parseSignature(a.signature)
   return { from: a.from, validAfter: a.validAfter, validBefore: a.validBefore, v: Number(v ?? BigInt(27 + (yParity ?? 0))), r, s }
 }
@@ -96,7 +123,7 @@ export async function sendRobust(relayer: ReturnType<ReturnType<typeof wc>["rela
   throw new Error("Couldn't get the payment onto Whitechain (busy relayer). Try again; nothing was charged.")
 }
 
-async function guardGas() {
+export async function guardGas() {
   const gasPrice = await wc().pub.getGasPrice()
   if (gasPrice > config.maxGasPrice) throw new PolicyError("gas_price_too_high", `gas price ${gasPrice} above cap`)
 }
@@ -109,7 +136,7 @@ export async function relayOrderPayment(p: {
   merchantSig: Hex
   auth: PayerAuth
 }): Promise<RelayResult> {
-  checkPolicy(p.auth.from, p.order.amount)
+  await checkPolicy(p.auth.from, p.order.amount)
   await guardGas()
   const { pub } = wc()
   const relayer = wc().relayerFor(p.auth.from)
@@ -139,7 +166,7 @@ export async function relayOrderPayment(p: {
 
 /** P2P: gasless push to a person (recipient resolved from their ENS name by the caller). */
 export async function relayDirectPayment(p: { to: Address; amount: bigint; memo: Hex; auth: PayerAuth}) {
-  checkPolicy(p.auth.from, p.amount)
+  await checkPolicy(p.auth.from, p.amount)
   await guardGas()
   const { pub } = wc()
   const relayer = wc().relayerFor(p.auth.from)

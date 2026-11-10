@@ -76,8 +76,7 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
         State state;
         uint128 amount;
         uint128 fee;
-        uint128 offeredRefund; // payee's pending partial-refund offer while Disputed
-        uint64 fundedAt;
+        uint128 offeredRefund; // payee's pending partial-refund offer while Disputed; zero at funding, so no storage write
     }
 
     /// @notice A gasless party action.
@@ -351,8 +350,7 @@ contract ProtectedEscrow is EIP712, Ownable, ReentrancyGuard {
             state: State.Funded,
             amount: uint128(o.amount),
             fee: uint128(fee),
-            offeredRefund: 0,
-            fundedAt: uint64(block.timestamp)
+            offeredRefund: 0
         });
         emit DealFunded(dealId, o.offerId, payer, o.payee, o.amount, fee, deliverBy);
     }

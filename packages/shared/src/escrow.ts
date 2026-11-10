@@ -6,7 +6,7 @@ import { WHITECHAIN_CHAIN_ID, USDT_DOMAIN, RECEIVE_WITH_AUTHORIZATION_TYPES } fr
 export { ProtectedEscrowAbi as ESCROW_ABI } from "./abi/ProtectedEscrow"
 
 /** Whitechain Sepolia deployment (deployments/1874.json → contracts.ProtectedEscrow). Testnet roles = deployer. */
-export const ESCROW_ADDRESS: Address = "0x9Ef5850b2E526CB9D40784f21B042BDd9aa7E24d"
+export const ESCROW_ADDRESS: Address = "0x6260d61536cbc49AC69DF3edEfc0614D79EDb330"
 
 // ------------------------------------------------------------------ enums (same order as Solidity)
 export enum DealState { None, Funded, Delivered, Disputed, Escalated, Released, Refunded, Settled }
@@ -147,4 +147,19 @@ export function describeAction(kind: ActionKind, p: { amount: string; counterpar
     case ActionKind.CancelBySeller: return `Cancel the deal. ${p.counterparty} gets everything back.`
     case ActionKind.Rule: return `Arbiter ruling: ${p.refund} back to the buyer.`
   }
+}
+
+// ------------------------------------------------------------------ dispute thread (signed, stored on Arkiv)
+export const DEAL_TEXT = { title: 80, details: 1_000, message: 2_000 } as const
+/** A party (or the arbiter) signs this to post a message or proof link in a deal's dispute thread. */
+export const dealEventMessage = (p: { dealId: Hex; actor: Address; kind: string; text: string; evidence?: string; issuedAt: number }) =>
+  `WondrPay protected deal\ndeal: ${p.dealId.toLowerCase()}\nfrom: ${p.actor}\nkind: ${p.kind}\nmessage: ${p.text}\nevidence: ${p.evidence ?? ""}\nissued: ${p.issuedAt}`
+
+/** What the deadline means in each open state: who gets the money if nobody acts. */
+export function onDeadline(state: DealState, hasPartialOffer: boolean): "refund" | "release" | "arbiter" | null {
+  if (state === DealState.Funded) return "refund" // seller never delivered
+  if (state === DealState.Delivered) return "release" // buyer never complained
+  if (state === DealState.Disputed) return hasPartialOffer ? "arbiter" : "refund"
+  if (state === DealState.Escalated) return "refund" // arbiter never ruled
+  return null
 }

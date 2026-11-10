@@ -15,6 +15,16 @@
       "verified": true
     },
     "ProtectedEscrow": {
+      "address": "0x6260d61536cbc49AC69DF3edEfc0614D79EDb330",
+      "tx": "0x672d461712d33407bf72138caef927e4ce4b59dbc88709c25e0ce1c1a953d713",
+      "verified": true,
+      "deployedAt": "2026-11-11",
+      "feeBps": 50,
+      "maxDealUSDT": 200,
+      "rules": "docs/rules/WONDRPAY_RULES.md v0.1",
+      "note": "Testnet: owner, treasury and arbiter are the deployer. Mainnet uses separate 2-of-3 Safes."
+    },
+    "ProtectedEscrowV2": {
       "address": "0x9Ef5850b2E526CB9D40784f21B042BDd9aa7E24d",
       "tx": "0x088d37bafc23cbd8b56d54713f106ed697fe505b25a3ff719c67eba466dabb8d",
       "verified": true,
@@ -22,7 +32,9 @@
       "feeBps": 50,
       "maxDealUSDT": 200,
       "rules": "docs/rules/WONDRPAY_RULES.md v0.1",
-      "note": "Testnet: owner, treasury and arbiter are the deployer. Mainnet uses separate 2-of-3 Safes."
+      "note": "Testnet: owner, treasury and arbiter are the deployer. Mainnet uses separate 2-of-3 Safes.",
+      "superseded": "2026-11-11",
+      "reason": "gas: dropped the unused fundedAt storage field (fund 206k -> 186k). No rule change."
     },
     "ProtectedEscrowV1": {
       "address": "0xBbE402F5c137AEc229c801d7F89ba3dD384fB649",

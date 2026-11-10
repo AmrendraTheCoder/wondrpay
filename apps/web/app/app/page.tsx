@@ -81,6 +81,7 @@ function WalletHome({ wallet, bal, rows, name, account, displayName, toast }: Re
 
       <div className="chips">
         <a className="chip-card" href="/transactions"><span className="ic">{Icon.history()}</span><div><div className="t1">Transactions</div><div className="t2">See all</div></div></a>
+        <a className="chip-card" href="/deals"><span className="ic">{Icon.shield()}</span><div><div className="t1">Protected deals</div><div className="t2 link">Sell safely</div></div></a>
         <a className="chip-card" href="/you"><span className="ic">{Icon.id()}</span><div><div className="t1">WondrPay ID</div><div className="t2 link">{name ? "View" : "Claim"}</div></div></a>
       </div>
 

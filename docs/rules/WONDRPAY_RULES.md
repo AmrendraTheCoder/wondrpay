@@ -108,7 +108,7 @@ Stablecoins have the money rails but no rulebook. **WondrPay Rules is that ruleb
 
 ## 5. Protected Pay (escrow): the heart of the rulebook
 
-*Contract: `ProtectedEscrow`, Whitechain Sepolia `0x9Ef5850b2E526CB9D40784f21B042BDd9aa7E24d` (verified). Spec: [BUILD_PLAN.md](../protected-pay/BUILD_PLAN.md).*
+*Contract: `ProtectedEscrow`, Whitechain Sepolia `0x6260d61536cbc49AC69DF3edEfc0614D79EDb330` (verified). Spec: [BUILD_PLAN.md](../protected-pay/BUILD_PLAN.md).*
 
 ### 5.1 How a deal moves
 
