@@ -10,7 +10,8 @@
     "./arkiv": "./src/arkiv.ts",
     "./security": "./src/security.ts",
     "./autopay": "./src/autopay.ts",
-    "./rewards": "./src/rewards.ts"
+    "./rewards": "./src/rewards.ts",
+    "./escrow": "./src/escrow.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

@@ -13,6 +13,15 @@
       "address": "0x9f38d33010345dcd62e26640b539263fa139026e",
       "tx": "0xc2146e5cd502ece4a98771f89b92d0def11275c15473ada2f70e8738379f9404",
       "verified": true
+    },
+    "ProtectedEscrow": {
+      "address": "0xBbE402F5c137AEc229c801d7F89ba3dD384fB649",
+      "tx": "0xef49a18cf81cab2c1de73915b4c9803cd0aea576ebd31ccf8894a37700b18ec3",
+      "verified": true,
+      "deployedAt": "2026-11-10",
+      "feeBps": 50,
+      "maxDealUSDT": 200,
+      "note": "Testnet: owner, treasury and arbiter are the deployer. Mainnet uses separate 2-of-3 Safes."
     }
   },
   "token": {
@@ -51,5 +60,23 @@
         "createTx": "0x3d761caea883fd90fc251ff5bd310e90db93300c0813fe08b1b94e691dd85aea"
       }
     }
-  ]
+  ],
+  "protectedPayDemo": {
+    "date": "2026-11-10",
+    "amountUSDT": 0.5,
+    "released": {
+      "dealId": "0x2372edab16100bc42d1e0c0c24848a63311c5bc340ab5ce6125cf95913603f2a",
+      "fund": "0xee41fb007b638fedeee29afdebdc81063c37342e115a8a2c2c0b56c14e5f2ac2",
+      "delivered": "0x02f943bc8206307d8b718a9d1e7048b77241e49f5a44e214dad599ccd3f25d0d",
+      "release": "0xc323dd443e6a0c64b12ab3fa008ff62e639bc1681e8896d5ea8ad3364e65e3cb"
+    },
+    "settledPartial": {
+      "dealId": "0x735261455df0a131c9d3f768eb8d3161b77bb12822b80c47bdea3807019880c5",
+      "fund": "0x6a28eb0f73ffb77dbbde08f735fa164c3c3f6acb1358066fb3a614d3e6275c44",
+      "delivered": "0xd351e64eadf05e4c0e874560b33c789057c0ca3b3cc791695d59303108dbb53f",
+      "dispute": "0x16f40fe6b75718a7c48c5338ce61e6e775011634c73754cf793c033103e17ee6",
+      "offer40pct": "0x5cc72e8e5a9f2e1dea4bbfccb32c40b224ca69279a9a47e86b4cc3e1c2b9c397",
+      "accept": "0x884992d97344747e61210d9cd4c09187952fa2d60a0214047108bdc6cd1ebb8f"
+    }
+  }
 }
