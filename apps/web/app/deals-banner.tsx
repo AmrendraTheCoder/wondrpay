@@ -34,13 +34,13 @@ export function DealsBanner({ address, business }: { address?: string; business?
       <div className="row" style={{ justifyContent: "flex-start", gap: 12 }}>
         <span className="ic">{Icon.shield(24)}</span>
         <div className="grow">
-          <div className="strong">{business ? "Taking a custom order or a pre-order?" : "Dealing with someone you don\u2019t know?"}</div>
-          <div className="sub">A protected deal holds the buyer\u2019s money until they confirm they got what they paid for. Nobody can run off with it.</div>
+          <div className="strong">{business ? "Taking a custom order or a pre-order?" : "Dealing with someone you don't know?"}</div>
+          <div className="sub">A protected deal holds the buyer's money until they confirm they got what they paid for. Nobody can run off with it.</div>
         </div>
       </div>
       <div className="deal-intro-go">
-        <a className="btn btn-primary" href="/deal/new">I\u2019m selling</a>
-        <a className="btn btn-ghost" href="/deals?buying=1">I\u2019m buying</a>
+        <a className="btn btn-primary" href="/deal/new">I'm selling</a>
+        <a className="btn btn-ghost" href="/deals?buying=1">I'm buying</a>
       </div>
     </div>
   )
