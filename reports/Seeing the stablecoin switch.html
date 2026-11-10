@@ -1,0 +1,638 @@
+<title>Seeing the Stablecoin Switch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column of "statement cards" — each quotes a sentence from the report, then draws it, then says what to build. */
+:root {
+  --bg: #f4f5fa; --surface: #ffffff; --soft: #eceffa; --ink: #13172f; --muted: #586080; --line: #d6daea;
+  --brand: #2448ff; --brand-ink: #ffffff; --lime: #b9d22a; --lime-ink: #1d2306;
+  --live: #12865a; --ann: #a8690f; --gap: #c8344f;
+  --live-bg: #e3f4ec; --ann-bg: #fbf0dc; --gap-bg: #fbe5ea;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b0e1c; --surface: #131830; --soft: #1a2042; --ink: #eceef8; --muted: #9ba3c2; --line: #2a3158;
+  --brand: #6f88ff; --brand-ink: #0b0e1c; --lime: #ddf05a; --lime-ink: #1d2306;
+  --live: #3ccf8e; --ann: #e8b34f; --gap: #ff6f86;
+  --live-bg: #12352a; --ann-bg: #3a2c12; --gap-bg: #3d1622; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b0e1c; --surface: #131830; --soft: #1a2042; --ink: #eceef8; --muted: #9ba3c2; --line: #2a3158;
+  --brand: #6f88ff; --brand-ink: #0b0e1c; --lime: #ddf05a; --lime-ink: #1d2306;
+  --live: #3ccf8e; --ann: #e8b34f; --gap: #ff6f86;
+  --live-bg: #12352a; --ann-bg: #3a2c12; --gap-bg: #3d1622; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 40px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.12; }
+h1 { font-size: clamp(34px, 6vw, 58px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(22px, 3.2vw, 30px); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 15px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-family: var(--body); }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--brand); }
+.lede { font-size: 18px; color: var(--muted); max-width: 62ch; }
+.hero { display: grid; gap: 16px; padding-block: 8px 4px; }
+.kicker { font: 500 13px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--brand); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--mono); padding: 6px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.tag i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; }
+.toc a { text-decoration: none; border-bottom: 1px solid var(--line); color: var(--ink); }
+.toc a:hover { border-color: var(--brand); color: var(--brand); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: clamp(18px, 3vw, 30px); display: grid; gap: 18px; min-width: 0; }
+.quote { border-left: 3px solid var(--brand); padding: 4px 0 4px 16px; font-size: 17px; font-style: italic; color: var(--ink); max-width: 72ch; }
+.quote cite { display: block; font: 400 12px/1.4 var(--mono); font-style: normal; color: var(--muted); margin-top: 6px; }
+.fig { overflow-x: auto; border-radius: 12px; background: var(--soft); padding: 14px; }
+.fig svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.fig.narrow svg { min-width: 520px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.two > div { min-width: 0; display: grid; gap: 8px; align-content: start; }
+@media (max-width: 720px) { .two { grid-template-columns: 1fr; } }
+.build { display: flex; flex-wrap: wrap; gap: 8px; }
+.build span { font-size: 13.5px; padding: 6px 11px; border-radius: 10px; background: var(--lime); color: var(--lime-ink); font-weight: 500; }
+.avoid span { background: var(--gap-bg); color: var(--gap); }
+.num { font-variant-numeric: tabular-nums; }
+.src { font: 400 12px/1.5 var(--mono); color: var(--muted); }
+
+/* stepper */
+.stepper { display: grid; gap: 12px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.controls button { font: 600 14px/1 var(--body); padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.controls button.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.controls button:focus-visible, .toc a:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.controls .count { font: 500 13px/1 var(--mono); color: var(--muted); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; counter-reset: s; }
+.steps li { counter-increment: s; padding: 8px 12px 8px 40px; border-radius: 10px; position: relative; color: var(--muted); font-size: 15px; transition: background .2s, color .2s; }
+.steps li::before { content: counter(s); position: absolute; left: 10px; top: 8px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 600 12px/1 var(--mono); background: var(--soft); color: var(--muted); }
+.steps li.on { background: var(--soft); color: var(--ink); }
+.steps li.on::before { background: var(--brand); color: var(--brand-ink); }
+[data-active] [data-s] { opacity: .28; transition: opacity .25s; }
+[data-active] [data-s].on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* svg palette */
+svg text { font-family: var(--body); fill: var(--ink); }
+svg .t-mono { font-family: var(--mono); }
+svg .t-muted { fill: var(--muted); }
+svg .t-brand { fill: var(--brand); }
+svg .t-live { fill: var(--live); } svg .t-ann { fill: var(--ann); } svg .t-gap { fill: var(--gap); }
+svg .t-on-brand { fill: var(--brand-ink); }
+svg .t-on-lime { fill: var(--lime-ink); }
+svg .t-b { font-weight: 600; } svg .t-h { font-family: var(--display); font-weight: 700; }
+svg .box { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+svg .box-brand { fill: var(--brand); }
+svg .box-lime { fill: var(--lime); }
+svg .box-live { fill: var(--live-bg); stroke: var(--live); stroke-width: 1.2; }
+svg .box-ann { fill: var(--ann-bg); stroke: var(--ann); stroke-width: 1.2; }
+svg .box-gap { fill: var(--gap-bg); stroke: var(--gap); stroke-width: 1.4; stroke-dasharray: 6 4; }
+svg .band { fill: var(--surface); stroke: var(--line); }
+svg .ln { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+svg .ln-brand { stroke: var(--brand); stroke-width: 2.2; fill: none; }
+svg .ln-gap { stroke: var(--gap); stroke-width: 2; fill: none; stroke-dasharray: 5 4; }
+svg .ln-live { stroke: var(--live); stroke-width: 2.2; fill: none; }
+svg .dot-live { fill: var(--live); } svg .dot-ann { fill: var(--ann); } svg .dot-gap { fill: var(--gap); }
+svg .grid { stroke: var(--line); stroke-width: 1; }
+svg .bar { fill: var(--brand); } svg .bar-gap { fill: var(--gap); } svg .bar-lime { fill: var(--lime); }
+footer { color: var(--muted); font-size: 14px; display: grid; gap: 6px; }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">Visual companion · Stablecoin payment chains compared</div>
+    <h1>Seeing the stablecoin switch</h1>
+    <p class="lede">Each card takes one sentence from the research report, draws what it means, puts it in plain words, and ends with what to build (or avoid) in the next version of WondrPay. Flows with numbered steps can be played one step at a time.</p>
+    <div class="legend" aria-label="Colour key">
+      <span class="tag"><i style="background:var(--live)"></i>Live today</span>
+      <span class="tag"><i style="background:var(--ann)"></i>Partial or announced</span>
+      <span class="tag"><i style="background:var(--gap)"></i>Missing</span>
+      <span class="tag"><i style="background:var(--brand)"></i>WondrPay</span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#big-picture">The missing layer</a><a href="#upi-layers">UPI's five layers</a><a href="#upi-flow">Who holds the money</a><a href="#gas">Who pays gas</a><a href="#tempo-lane">Payment lanes</a><a href="#gardens">Walled gardens</a><a href="#rails">Cross-chain rails</a><a href="#universal">Why no universal address</a><a href="#refunds">Why no refunds</a><a href="#mandates">Safe mandates</a><a href="#blueprint">WondrPay v2</a><a href="#roadmap">Roadmap</a>
+    </nav>
+  </header>
+
+  <!-- 1. Big picture -->
+  <section class="card" id="big-picture">
+    <h2>The race isn't about speed any more. A middle layer is missing.</h2>
+    <blockquote class="quote">“Nobody has built ‘UPI for stablecoins’, and the missing piece is not a faster chain… What is missing is the layer UPI gets from NPCI: one shared name directory, one request and QR format every wallet accepts, mandatory refund and turnaround rules, and safe mandates.”<cite>Report, opening summary</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 330" role="img" aria-label="Three layers: apps on top, a missing shared rules layer in the middle, fast settlement chains at the bottom">
+        <text x="20" y="28" class="t-b">Apps people already use</text>
+        <g>
+          <rect x="20" y="40" width="150" height="46" rx="10" class="box"/><text x="95" y="68" text-anchor="middle">MiniPay</text>
+          <rect x="185" y="40" width="150" height="46" rx="10" class="box"/><text x="260" y="68" text-anchor="middle">World Money</text>
+          <rect x="350" y="40" width="150" height="46" rx="10" class="box"/><text x="425" y="68" text-anchor="middle">Binance Pay</text>
+          <rect x="515" y="40" width="150" height="46" rx="10" class="box"/><text x="590" y="68" text-anchor="middle">Venmo / Cash App</text>
+          <rect x="680" y="40" width="200" height="46" rx="10" class="box-brand"/><text x="780" y="68" text-anchor="middle" class="t-on-brand t-b">WondrPay</text>
+        </g>
+        <rect x="20" y="110" width="860" height="102" rx="14" class="box-gap"/>
+        <text x="40" y="136" class="t-gap t-b">Missing: the shared rules layer (what NPCI is to UPI)</text>
+        <g>
+          <rect x="40" y="150" width="190" height="46" rx="9" class="box"/><text x="135" y="178" text-anchor="middle">One name directory</text>
+          <rect x="245" y="150" width="200" height="46" rx="9" class="box"/><text x="345" y="178" text-anchor="middle">One request / QR format</text>
+          <rect x="460" y="150" width="200" height="46" rx="9" class="box"/><text x="560" y="178" text-anchor="middle">Refund &amp; dispute rules</text>
+          <rect x="675" y="150" width="185" height="46" rx="9" class="box"/><text x="767" y="178" text-anchor="middle">Safe mandates</text>
+        </g>
+        <text x="20" y="240" class="t-b">Settlement chains: already fast enough</text>
+        <g class="t-mono">
+          <rect x="20" y="252" width="112" height="56" rx="10" class="box-live"/><text x="76" y="276" text-anchor="middle">Arc</text><text x="76" y="296" text-anchor="middle" class="t-muted t-mono" font-size="12">&lt;1 s</text>
+          <rect x="144" y="252" width="112" height="56" rx="10" class="box-live"/><text x="200" y="276" text-anchor="middle">Tempo</text><text x="200" y="296" text-anchor="middle" class="t-muted t-mono" font-size="12">~0.5 s</text>
+          <rect x="268" y="252" width="112" height="56" rx="10" class="box-live"/><text x="324" y="276" text-anchor="middle">Stable</text><text x="324" y="296" text-anchor="middle" class="t-muted t-mono" font-size="12">~0.7 s</text>
+          <rect x="392" y="252" width="112" height="56" rx="10" class="box-live"/><text x="448" y="276" text-anchor="middle">Monad</text><text x="448" y="296" text-anchor="middle" class="t-muted t-mono" font-size="12">0.6 s final</text>
+          <rect x="516" y="252" width="112" height="56" rx="10" class="box-live"/><text x="572" y="276" text-anchor="middle">Base</text><text x="572" y="296" text-anchor="middle" class="t-muted t-mono" font-size="12">0.2 s pre-conf</text>
+          <rect x="640" y="252" width="112" height="56" rx="10" class="box-live"/><text x="696" y="276" text-anchor="middle">Tron</text><text x="696" y="296" text-anchor="middle" class="t-muted t-mono" font-size="12">$24B/day</text>
+          <rect x="764" y="252" width="116" height="56" rx="10" class="box-live"/><text x="822" y="276" text-anchor="middle">Whitechain</text><text x="822" y="296" text-anchor="middle" class="t-muted t-mono" font-size="12">1 s soft</text>
+        </g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>Moving dollars on a blockchain is already quick and cheap. What people lack is the agreement on top: a name every app can look up, a QR every wallet can scan, and rules for what happens when a payment goes wrong. In India, NPCI provides exactly that agreement for every bank and app. In crypto, nobody does.</p></div>
+      <div><h3>What it means for you</h3><p>Don't pitch "a faster chain" or "a cheaper transfer". Pitch the rules layer. WondrPay already has two of the four pieces (refund cases and Autopay).</p><div class="build"><span>Build the rules layer</span><span>Don't build another chain</span></div></div>
+    </div>
+  </section>
+
+  <!-- 2. UPI layers -->
+  <section class="card" id="upi-layers">
+    <h2>UPI is five shared layers. Crypto has each piece, but locked inside one wallet or one chain.</h2>
+    <blockquote class="quote">“Crypto has a live equivalent for most UPI layers, from ENS names to CCTP burn-and-mint, but each one is locked to a chain or a wallet, and the research found no consortium writing a shared rulebook.”<cite>Report, opening summary and UPI layer map</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 400" role="img" aria-label="Five UPI layers compared with their crypto equivalents and WondrPay's position">
+        <text x="20" y="26" class="t-b t-muted" font-size="13">UPI LAYER (shared by all apps)</text>
+        <text x="300" y="26" class="t-b t-muted" font-size="13">CRYPTO TODAY</text>
+        <text x="640" y="26" class="t-b t-muted" font-size="13">WONDRPAY</text>
+        <g>
+          <rect x="20" y="40" width="260" height="62" rx="10" class="box"/><text x="36" y="66" class="t-b">Names</text><text x="36" y="88" class="t-muted" font-size="13">name@bank, phone number → VPA</text>
+          <rect x="300" y="40" width="320" height="62" rx="10" class="box-ann"/><circle cx="318" cy="60" r="5" class="dot-ann"/><text x="330" y="65">ENS, Basenames, Celo phone lookup</text><text x="318" y="88" class="t-muted" font-size="13">Live, but each app keeps its own</text>
+          <rect x="640" y="40" width="240" height="62" rx="10" class="box"/><text x="656" y="66" class="t-brand t-b">Has ENS names</text><text x="656" y="88" class="t-muted" font-size="13">Add per-chain records + verified name</text>
+        </g>
+        <g>
+          <rect x="20" y="112" width="260" height="62" rx="10" class="box"/><text x="36" y="138" class="t-b">Request format</text><text x="36" y="160" class="t-muted" font-size="13">upi://pay QR, Bharat QR</text>
+          <rect x="300" y="112" width="320" height="62" rx="10" class="box-ann"/><circle cx="318" cy="132" r="5" class="dot-ann"/><text x="330" y="137">EIP-681, Solana Pay</text><text x="318" y="160" class="t-muted" font-size="13">Live, but one chain and one token per QR</text>
+          <rect x="640" y="112" width="240" height="62" rx="10" class="box"/><text x="656" y="138" class="t-brand t-b">Signed request object</text><text x="656" y="160" class="t-muted" font-size="13">Wraps both formats</text>
+        </g>
+        <g>
+          <rect x="20" y="184" width="260" height="62" rx="10" class="box"/><text x="36" y="210" class="t-b">Login / approval</text><text x="36" y="232" class="t-muted" font-size="13">Bound phone + UPI PIN</text>
+          <rect x="300" y="184" width="320" height="62" rx="10" class="box-ann"/><circle cx="318" cy="204" r="5" class="dot-ann"/><text x="330" y="209">Passkey smart accounts</text><text x="318" y="232" class="t-muted" font-size="13">Live, but every wallet does it differently</text>
+          <rect x="640" y="184" width="240" height="62" rx="10" class="box"/><text x="656" y="210" class="t-brand t-b">PIN + passkey + World ID</text><text x="656" y="232" class="t-muted" font-size="13">World ID for risky actions</text>
+        </g>
+        <g>
+          <rect x="20" y="256" width="260" height="62" rx="10" class="box"/><text x="36" y="282" class="t-b">Switch &amp; settlement</text><text x="36" y="304" class="t-muted" font-size="13">NPCI routes, banks settle via RBI</text>
+          <rect x="300" y="256" width="320" height="62" rx="10" class="box-live"/><circle cx="318" cy="276" r="5" class="dot-live"/><text x="330" y="281">CCTP, Circle Gateway, USDT0</text><text x="318" y="304" class="t-muted" font-size="13">Live rails, but no neutral operator</text>
+          <rect x="640" y="256" width="240" height="62" rx="10" class="box"/><text x="656" y="282" class="t-brand t-b">Don't be the switch</text><text x="656" y="304" class="t-muted" font-size="13">Route over issuer rails</text>
+        </g>
+        <g>
+          <rect x="20" y="328" width="260" height="62" rx="10" class="box"/><text x="36" y="354" class="t-b">Rulebook</text><text x="36" y="376" class="t-muted" font-size="13">Limits, T+1 reversal, share caps</text>
+          <rect x="300" y="328" width="320" height="62" rx="10" class="box-gap"/><circle cx="318" cy="348" r="5" class="dot-gap"/><text x="330" y="353" class="t-gap t-b">Nothing</text><text x="318" y="376" class="t-muted" font-size="13">No refund deadlines, no limits, no members</text>
+          <rect x="640" y="328" width="240" height="62" rx="10" class="box-brand"/><text x="656" y="354" class="t-on-brand t-b">Publish the rulebook</text><text x="656" y="376" class="t-on-brand" font-size="13">Refunds, receipts, mandates</text>
+        </g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>Think of UPI as five floors of one building that every app shares. Crypto has built each floor separately, but each sits inside a different company's building. MetaMask can't read a MiniPay phone number, and a Solana Pay QR doesn't work in an Ethereum wallet. The top floor, the rulebook that says what happens when money goes wrong, doesn't exist anywhere.</p></div>
+      <div><h3>What it means for you</h3><p>Your column on the right is the plan. The most valuable cell is the bottom one: no one else has a rulebook, and you already store refund cases and receipts on Arkiv.</p><div class="build"><span>Per-chain ENS records</span><span>Signed request spec</span><span>Open rulebook</span></div></div>
+    </div>
+  </section>
+
+  <!-- 3. UPI flow stepper -->
+  <section class="card" id="upi-flow">
+    <h2>In UPI the app never touches the money. That is the model to copy.</h2>
+    <blockquote class="quote">“UPI is described as a neutral switch where ‘the app does not hold funds, and the bank does not own the user’… Third-party apps such as PhonePe and Google Pay… never hold customer funds.”<cite>Report, UPI section, citing NPCI</cite></blockquote>
+    <div class="stepper" data-stepper>
+      <div class="fig">
+        <svg viewBox="0 0 900 300" role="img" aria-label="A UPI payment flow compared with a WondrPay payment flow">
+          <text x="20" y="26" class="t-b t-muted" font-size="13">A UPI PAYMENT</text>
+          <g data-s="1"><rect x="20" y="40" width="140" height="56" rx="10" class="box"/><text x="90" y="64" text-anchor="middle" class="t-b">PhonePe app</text><text x="90" y="84" text-anchor="middle" class="t-muted" font-size="12">PIN typed here</text></g>
+          <g data-s="2"><path d="M160 68 H205" class="ln-brand"/><rect x="205" y="40" width="140" height="56" rx="10" class="box"/><text x="275" y="64" text-anchor="middle" class="t-b">Payer's bank</text><text x="275" y="84" text-anchor="middle" class="t-muted" font-size="12">debits ₹</text></g>
+          <g data-s="3"><path d="M345 68 H390" class="ln-brand"/><rect x="390" y="40" width="140" height="56" rx="10" class="box-brand"/><text x="460" y="64" text-anchor="middle" class="t-on-brand t-b">NPCI switch</text><text x="460" y="84" text-anchor="middle" class="t-on-brand" font-size="12">routes, applies rules</text></g>
+          <g data-s="4"><path d="M530 68 H575" class="ln-brand"/><rect x="575" y="40" width="140" height="56" rx="10" class="box"/><text x="645" y="64" text-anchor="middle" class="t-b">Payee's bank</text><text x="645" y="84" text-anchor="middle" class="t-muted" font-size="12">credits ₹</text></g>
+          <g data-s="5"><path d="M715 68 H760" class="ln-brand"/><rect x="760" y="40" width="120" height="56" rx="10" class="box"/><text x="820" y="64" text-anchor="middle" class="t-b">Shop app</text><text x="820" y="84" text-anchor="middle" class="t-muted" font-size="12">"₹ received"</text></g>
+          <g data-s="1,5"><rect x="20" y="108" width="140" height="26" rx="6" class="box-live"/><text x="90" y="126" text-anchor="middle" class="t-live" font-size="12">holds no money</text><rect x="760" y="108" width="120" height="26" rx="6" class="box-live"/><text x="820" y="126" text-anchor="middle" class="t-live" font-size="12">holds no money</text></g>
+
+          <line x1="20" y1="160" x2="880" y2="160" class="grid"/>
+          <text x="20" y="190" class="t-b t-muted" font-size="13">THE SAME IDEA IN WONDRPAY</text>
+          <g data-s="6"><rect x="20" y="204" width="170" height="60" rx="10" class="box"/><text x="105" y="228" text-anchor="middle" class="t-b">Your wallet</text><text x="105" y="248" text-anchor="middle" class="t-muted" font-size="12">your key signs</text></g>
+          <g data-s="7"><path d="M190 234 H260" class="ln-brand"/><rect x="260" y="204" width="230" height="60" rx="10" class="box-live"/><text x="375" y="228" text-anchor="middle" class="t-b">Issuer rail</text><text x="375" y="248" text-anchor="middle" class="t-muted" font-size="12">USDT / CCTP / Gateway moves it</text></g>
+          <g data-s="7"><path d="M490 234 H560" class="ln-brand"/><rect x="560" y="204" width="150" height="60" rx="10" class="box"/><text x="635" y="228" text-anchor="middle" class="t-b">Shop wallet</text><text x="635" y="248" text-anchor="middle" class="t-muted" font-size="12">receives USDT</text></g>
+          <g data-s="8"><rect x="730" y="196" width="150" height="76" rx="10" class="box-brand"/><text x="805" y="222" text-anchor="middle" class="t-on-brand t-b">WondrPay</text><text x="805" y="242" text-anchor="middle" class="t-on-brand" font-size="12">names, receipt,</text><text x="805" y="258" text-anchor="middle" class="t-on-brand" font-size="12">refund rules</text><path d="M730 234 C 690 290, 400 290, 375 266" class="ln-gap"/><text x="560" y="292" text-anchor="middle" class="t-gap" font-size="12">never in the money path</text></g>
+        </svg>
+      </div>
+      <div class="controls"><button type="button" data-prev>Back</button><button type="button" class="primary" data-next>Play step by step</button><span class="count" data-count>8 steps</span></div>
+      <ol class="steps">
+        <li data-cap>You type your PIN in the PhonePe app. The app only asks; it holds no money.</li>
+        <li data-cap>Your bank checks the PIN and takes the rupees from your account.</li>
+        <li data-cap>NPCI's switch routes the payment and applies the shared rules (limits, refunds).</li>
+        <li data-cap>The shop's bank receives the money.</li>
+        <li data-cap>The shop's app shows "received". Neither app ever held the money.</li>
+        <li data-cap>In WondrPay, your own key (unlocked by PIN or fingerprint) signs the payment.</li>
+        <li data-cap>The money moves on the issuer's own rail straight to the shop's wallet.</li>
+        <li data-cap>WondrPay provides the name lookup, the receipt and the refund rules, but stays out of the money path. That keeps you a software app, not a money transmitter.</li>
+      </ol>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>UPI scaled because apps compete on experience while the money only moves bank to bank. The crypto equivalent: the user's wallet signs, the stablecoin issuer's rail moves the money, and your app provides everything around it.</p></div>
+      <div><h3>What it means for you</h3><p>Your current design (user signs, relayer only pays gas) already follows this. Keep it that way as you add chains. The relayer and escrow contracts still need a lawyer's opinion.</p><div class="build"><span>User key signs every leg</span><span>Legal opinion on relayer</span></div><div class="build avoid"><span>Never hold user funds</span></div></div>
+    </div>
+  </section>
+
+  <!-- 4. Gas -->
+  <section class="card" id="gas">
+    <h2>Payment chains now compete on who pays the network fee.</h2>
+    <blockquote class="quote">“Every serious payment chain now finalizes in about a second or less. The real differences are in the gas model and in payment primitives built into the protocol.”<cite>Report, chain comparison</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 470" role="img" aria-label="Fee for one stablecoin transfer per chain on a logarithmic scale, with each chain's gas model">
+        <text x="20" y="24" class="t-b t-muted" font-size="13">MEASURED FEE FOR ONE STABLECOIN TRANSFER, 9 NOV 2026 (log scale)</text>
+        <g class="t-mono" font-size="11">
+          <line x1="250" y1="40" x2="250" y2="440" class="grid"/><text x="250" y="458" text-anchor="middle" class="t-muted t-mono">$0.000001</text>
+          <line x1="365" y1="40" x2="365" y2="440" class="grid"/><text x="365" y="458" text-anchor="middle" class="t-muted t-mono">$0.0001</text>
+          <line x1="480" y1="40" x2="480" y2="440" class="grid"/><text x="480" y="458" text-anchor="middle" class="t-muted t-mono">$0.01</text>
+          <line x1="595" y1="40" x2="595" y2="440" class="grid"/><text x="595" y="458" text-anchor="middle" class="t-muted t-mono">$1</text>
+          <line x1="710" y1="40" x2="710" y2="440" class="grid"/><text x="710" y="458" text-anchor="middle" class="t-muted t-mono">$100</text>
+        </g>
+        <!-- x = 250 + 57.5*(log10(fee)+6) -->
+        <g font-size="13">
+          <text x="20" y="62">Plasma</text><text x="110" y="62" class="t-muted" font-size="11">free USDT sends</text><rect x="250" y="50" width="18" height="16" rx="3" class="bar-lime"/><text x="276" y="63" class="t-mono t-muted" font-size="11">$0.000002</text>
+          <text x="20" y="90">OP Mainnet</text><text x="110" y="90" class="t-muted" font-size="11">ETH gas</text><rect x="250" y="78" width="35" height="16" rx="3" class="bar"/><text x="293" y="91" class="t-mono t-muted" font-size="11">$0.000004</text>
+          <text x="20" y="118">Stable</text><text x="110" y="118" class="t-muted" font-size="11">USDT is gas</text><rect x="250" y="106" width="107" height="16" rx="3" class="bar-lime"/><text x="365" y="119" class="t-mono t-muted" font-size="11">$0.00007 (est.)</text>
+          <text x="20" y="146">World Chain</text><text x="110" y="146" class="t-muted" font-size="11">ETH gas</text><rect x="250" y="134" width="124" height="16" rx="3" class="bar"/><text x="382" y="147" class="t-mono t-muted" font-size="11">$0.00014</text>
+          <text x="20" y="174">Tempo</text><text x="110" y="174" class="t-muted" font-size="11">any USD coin</text><rect x="250" y="162" width="130" height="16" rx="3" class="bar-lime"/><text x="388" y="175" class="t-mono t-muted" font-size="11">$0.00018 (est.)</text>
+          <text x="20" y="202">Monad</text><text x="110" y="202" class="t-muted" font-size="11">MON gas</text><rect x="250" y="190" width="137" height="16" rx="3" class="bar"/><text x="395" y="203" class="t-mono t-muted" font-size="11">$0.00024</text>
+          <text x="20" y="230">Celo</text><text x="110" y="230" class="t-muted" font-size="11">gas in USDT/USDC</text><rect x="250" y="218" width="158" height="16" rx="3" class="bar-lime"/><text x="416" y="231" class="t-mono t-muted" font-size="11">$0.00056</text>
+          <text x="20" y="258">Arc</text><text x="110" y="258" class="t-muted" font-size="11">USDC is gas</text><rect x="250" y="246" width="172" height="16" rx="3" class="bar-lime"/><text x="430" y="259" class="t-mono t-muted" font-size="11">$0.00098</text>
+          <text x="20" y="286">Arbitrum</text><text x="110" y="286" class="t-muted" font-size="11">ETH gas</text><rect x="250" y="274" width="191" height="16" rx="3" class="bar"/><text x="449" y="287" class="t-mono t-muted" font-size="11">$0.0021</text>
+          <text x="20" y="314">Base</text><text x="110" y="314" class="t-muted" font-size="11">ETH, paymaster</text><rect x="250" y="302" width="205" height="16" rx="3" class="bar"/><text x="463" y="315" class="t-mono t-muted" font-size="11">$0.0036</text>
+          <text x="20" y="342" class="t-brand t-b">Whitechain</text><text x="110" y="342" class="t-muted" font-size="11">WBT gas only</text><rect x="250" y="330" width="250" height="16" rx="3" class="bar"/><text x="508" y="343" class="t-mono t-muted" font-size="11">$0.023 (est.)</text>
+          <text x="20" y="370">Ethereum</text><text x="110" y="370" class="t-muted" font-size="11">ETH gas</text><rect x="250" y="358" width="306" height="16" rx="3" class="bar"/><text x="564" y="371" class="t-mono t-muted" font-size="11">$0.21</text>
+          <text x="20" y="398" class="t-gap t-b">Tron</text><text x="110" y="398" class="t-muted" font-size="11">TRX energy burn</text><rect x="250" y="386" width="363" height="16" rx="3" class="bar-gap"/><text x="621" y="399" class="t-mono t-muted" font-size="11">$2–4.50 (research, not measured)</text>
+        </g>
+        <g font-size="12"><rect x="250" y="414" width="12" height="12" rx="2" class="bar-lime"/><text x="268" y="424" class="t-muted">gas paid in a stablecoin or free for USDT</text><rect x="540" y="414" width="12" height="12" rx="2" class="bar"/><text x="558" y="424" class="t-muted">gas paid in the chain's own token</text></g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>Every chain except Ethereum and Tron costs less than a cent per transfer. The real difference is what the user must hold to pay the fee. On Arc, Tempo, Stable and Celo it's the dollars they already have; on Plasma, sending USDT is free. Elsewhere they need a second coin (ETH, MON, WBT), unless an app pays for them. Tron is where most USDT is, and it's the most expensive.</p></div>
+      <div><h3>What it means for you</h3><p>Whitechain has no built-in way to pay gas for users, so your relayer is a real feature there, not a workaround. On new chains, prefer ones where fees are paid in stablecoins.</p><div class="build"><span>Keep the Whitechain relayer</span><span>Base + Monad as cheap legs</span><span>Tempo for merchants later</span></div></div>
+    </div>
+    <p class="src">Source: live benchmark in reports/Chain benchmark results.md. Tempo, Stable and Whitechain are estimates.</p>
+  </section>
+
+  <!-- 5. Tempo lane -->
+  <section class="card" id="tempo-lane">
+    <h2>Tempo reserves space in every block just for payments.</h2>
+    <blockquote class="quote">“A transaction qualifies for the payment lane only if every call is an allow-listed TIP-20 payment, and a header field caps gas for everything else, so non-payment traffic cannot crowd out payments… Its 32-byte memos and virtual addresses give merchants invoice reconciliation.”<cite>Report, newest payment chains</cite></blockquote>
+    <div class="fig narrow">
+      <svg viewBox="0 0 900 260" role="img" aria-label="A Tempo block split into a reserved payment lane and a capped general lane, with a transfer carrying an invoice memo">
+        <text x="20" y="26" class="t-b t-muted" font-size="13">ONE TEMPO BLOCK (~0.5 s)</text>
+        <rect x="20" y="40" width="560" height="190" rx="14" class="band"/>
+        <rect x="36" y="56" width="330" height="158" rx="10" class="box-live"/>
+        <text x="52" y="80" class="t-live t-b">Payment lane (reserved)</text>
+        <g font-size="12" class="t-mono">
+          <rect x="52" y="94" width="96" height="32" rx="6" class="box"/><text x="100" y="114" text-anchor="middle" class="t-mono">pay $12</text>
+          <rect x="156" y="94" width="96" height="32" rx="6" class="box"/><text x="204" y="114" text-anchor="middle" class="t-mono">pay $3.30</text>
+          <rect x="260" y="94" width="92" height="32" rx="6" class="box"/><text x="306" y="114" text-anchor="middle" class="t-mono">pay $40</text>
+          <rect x="52" y="134" width="96" height="32" rx="6" class="box"/><text x="100" y="154" text-anchor="middle" class="t-mono">pay $0.05</text>
+          <rect x="156" y="134" width="96" height="32" rx="6" class="box"/><text x="204" y="154" text-anchor="middle" class="t-mono">pay $9</text>
+        </g>
+        <text x="52" y="198" class="t-muted" font-size="12">only plain stablecoin transfers get in here</text>
+        <rect x="380" y="56" width="184" height="158" rx="10" class="box-ann"/>
+        <text x="396" y="80" class="t-ann t-b">Everything else</text>
+        <text x="396" y="104" class="t-muted" font-size="12">trading, NFTs, bots</text>
+        <text x="396" y="124" class="t-muted" font-size="12">gas capped by the</text>
+        <text x="396" y="142" class="t-muted" font-size="12">block header, so it</text>
+        <text x="396" y="160" class="t-muted" font-size="12">can't crowd out</text>
+        <text x="396" y="178" class="t-muted" font-size="12">payments</text>
+        <text x="620" y="62" class="t-b">One transfer, with its memo</text>
+        <rect x="620" y="76" width="260" height="128" rx="12" class="box"/>
+        <text x="636" y="100" class="t-mono" font-size="12">to:   amaron.wondrpay.eth</text>
+        <text x="636" y="122" class="t-mono" font-size="12">amt:  3.30 USDC</text>
+        <rect x="632" y="134" width="236" height="26" rx="6" class="box-lime"/>
+        <text x="642" y="152" class="t-mono t-on-lime" font-size="12">memo: INV-87352199 (32 bytes)</text>
+        <text x="636" y="186" class="t-muted" font-size="12">merchant matches it to the order</text>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>On a busy general chain, a payment waits in the same queue as a trading bot. Tempo gives payments a reserved lane in every block, like a bus lane on a highway. Each payment can also carry a short reference (an invoice number), so a shop's books match automatically.</p></div>
+      <div><h3>What it means for you</h3><p>Phase 2 material: when you add merchant reconciliation, Tempo's memos replace the order-id plumbing you built yourself on Whitechain.</p><div class="build"><span>Tempo for merchant invoices (Phase 2)</span></div></div>
+    </div>
+  </section>
+
+  <!-- 6. Walled gardens -->
+  <section class="card" id="gardens">
+    <h2>Every free transfer is an internal transfer.</h2>
+    <blockquote class="quote">“Binance Pay is free only Binance-to-Binance, World Money usernames reach only other World Money users, and Venmo's external crypto sends are irreversible.”<cite>Report, consumer apps patterns</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 290" role="img" aria-label="Three closed apps, each free inside, connected only by costly irreversible on-chain transfers">
+        <g>
+          <ellipse cx="150" cy="140" rx="130" ry="100" class="box-live"/>
+          <text x="150" y="70" text-anchor="middle" class="t-b">Binance Pay</text>
+          <circle cx="105" cy="130" r="20" class="box"/><text x="105" y="135" text-anchor="middle" font-size="12">A</text>
+          <circle cx="195" cy="130" r="20" class="box"/><text x="195" y="135" text-anchor="middle" font-size="12">B</text>
+          <path d="M125 130 H175" class="ln-live"/><text x="150" y="176" text-anchor="middle" class="t-live" font-size="12">free, instant,</text><text x="150" y="192" text-anchor="middle" class="t-live" font-size="12">just a database entry</text>
+        </g>
+        <g>
+          <ellipse cx="450" cy="140" rx="130" ry="100" class="box-live"/>
+          <text x="450" y="70" text-anchor="middle" class="t-b">World Money</text>
+          <circle cx="405" cy="130" r="20" class="box"/><text x="405" y="135" text-anchor="middle" font-size="12">C</text>
+          <circle cx="495" cy="130" r="20" class="box"/><text x="495" y="135" text-anchor="middle" font-size="12">D</text>
+          <path d="M425 130 H475" class="ln-live"/><text x="450" y="176" text-anchor="middle" class="t-live" font-size="12">@username only</text><text x="450" y="192" text-anchor="middle" class="t-live" font-size="12">works inside</text>
+        </g>
+        <g>
+          <ellipse cx="750" cy="140" rx="130" ry="100" class="box-live"/>
+          <text x="750" y="70" text-anchor="middle" class="t-b">Venmo (PYUSD)</text>
+          <circle cx="705" cy="130" r="20" class="box"/><text x="705" y="135" text-anchor="middle" font-size="12">E</text>
+          <circle cx="795" cy="130" r="20" class="box"/><text x="795" y="135" text-anchor="middle" font-size="12">F</text>
+          <path d="M725 130 H775" class="ln-live"/><text x="750" y="176" text-anchor="middle" class="t-live" font-size="12">free inside</text>
+        </g>
+        <path d="M245 210 C 300 265, 340 265, 395 210" class="ln-gap"/>
+        <path d="M545 210 C 600 265, 640 265, 695 210" class="ln-gap"/>
+        <text x="320" y="282" text-anchor="middle" class="t-gap" font-size="12">leave the app: copy a 0x address,</text>
+        <text x="620" y="282" text-anchor="middle" class="t-gap" font-size="12">pay a fee, can't be reversed</text>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>"Free and instant" in these apps happens because the money never leaves the company's own database. The moment you pay someone in a different app, you're back to copying a long address, picking a chain and paying a fee, with no way back if you get it wrong. Their usernames are a way to keep you in, not a shared directory.</p></div>
+      <div><h3>What it means for you</h3><p>A name that works across apps is your differentiator. Let other wallets look up WondrPay names (the federated resolver in Phase 2), and show a verified recipient name before every send.</p><div class="build"><span>Federated name lookup</span><span>Verified recipient name before paying</span></div></div>
+    </div>
+  </section>
+
+  <!-- 7. Rails -->
+  <section class="card" id="rails">
+    <h2>Moving dollars between chains: solved for USDC, partly for USDT, risky for everything else.</h2>
+    <blockquote class="quote">“CCTP V2 burns and mints native USDC across about 31 domains… Fast Transfer settles in about 8–20 seconds… USDT0 uses LayerZero OFT burn and mint on about 24–25 networks. Tron cannot host native OFT, so it connects only through a liquidity-based ‘Legacy Mesh’.”<cite>Report, cross-chain section</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 360" role="img" aria-label="Three ways stablecoins move between chains and how long each takes">
+        <g>
+          <text x="20" y="28" class="t-b">USDC on Circle's CCTP</text><circle cx="200" cy="23" r="5" class="dot-live"/><text x="210" y="28" class="t-live" font-size="12">live, 31 chains</text>
+          <rect x="20" y="40" width="150" height="50" rx="10" class="box"/><text x="95" y="62" text-anchor="middle" class="t-b">Chain A</text><text x="95" y="80" text-anchor="middle" class="t-muted" font-size="12">burn 10 USDC</text>
+          <path d="M170 65 H260" class="ln-brand"/><rect x="260" y="40" width="190" height="50" rx="10" class="box-live"/><text x="355" y="62" text-anchor="middle" class="t-b">Circle signs a receipt</text><text x="355" y="80" text-anchor="middle" class="t-muted" font-size="12">"10 burned on A"</text>
+          <path d="M450 65 H540" class="ln-brand"/><rect x="540" y="40" width="150" height="50" rx="10" class="box"/><text x="615" y="62" text-anchor="middle" class="t-b">Chain B</text><text x="615" y="80" text-anchor="middle" class="t-muted" font-size="12">mint 10 USDC</text>
+          <text x="710" y="60" class="t-muted" font-size="12">No pool to hack.</text><text x="710" y="78" class="t-muted" font-size="12">Same coin both sides.</text>
+        </g>
+        <g>
+          <text x="20" y="130" class="t-b">USDT0 on LayerZero</text><circle cx="185" cy="125" r="5" class="dot-live"/><text x="195" y="130" class="t-live" font-size="12">live, ~25 chains</text>
+          <rect x="20" y="142" width="150" height="46" rx="10" class="box"/><text x="95" y="170" text-anchor="middle">burn USDT0</text>
+          <path d="M170 165 H260" class="ln-brand"/><rect x="260" y="142" width="190" height="46" rx="10" class="box-live"/><text x="355" y="170" text-anchor="middle">verifiers confirm</text>
+          <path d="M450 165 H540" class="ln-brand"/><rect x="540" y="142" width="150" height="46" rx="10" class="box"/><text x="615" y="170" text-anchor="middle">mint USDT0</text>
+        </g>
+        <g>
+          <text x="20" y="228" class="t-b">Tron USDT (where most USDT is)</text><circle cx="262" cy="223" r="5" class="dot-ann"/><text x="272" y="228" class="t-ann" font-size="12">liquidity swap only</text>
+          <rect x="20" y="240" width="150" height="46" rx="10" class="box"/><text x="95" y="268" text-anchor="middle">Tron USDT</text>
+          <path d="M170 263 H260" class="ln-gap"/><rect x="260" y="240" width="190" height="46" rx="10" class="box-ann"/><text x="355" y="262" text-anchor="middle">"Legacy Mesh" pool</text><text x="355" y="278" text-anchor="middle" class="t-muted" font-size="11">someone's inventory</text>
+          <path d="M450 263 H540" class="ln-gap"/><rect x="540" y="240" width="150" height="46" rx="10" class="box"/><text x="615" y="268" text-anchor="middle">USDT0 elsewhere</text>
+          <text x="710" y="258" class="t-muted" font-size="12">Circle's CCTP has</text><text x="710" y="276" class="t-muted" font-size="12">no Tron route at all.</text>
+        </g>
+        <text x="20" y="320" class="t-b t-muted" font-size="13">HOW LONG THE SAFE WAY TAKES</text>
+        <g font-size="12" class="t-mono">
+          <rect x="20" y="332" width="40" height="14" rx="3" class="bar-lime"/><text x="66" y="344" class="t-mono">Fast: 8–20 s (Circle fronts it, ~1 bps)</text>
+          <rect x="370" y="332" width="120" height="14" rx="3" class="bar"/><text x="496" y="344" class="t-mono">Standard: 15–19 min, free</text>
+          <rect x="690" y="332" width="190" height="14" rx="3" class="bar-gap"/><text x="690" y="326" class="t-mono t-gap">Linea: 6–32 h</text>
+        </g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>The safest way to move a stablecoin between chains is for its issuer to destroy it on one chain and create it on the other. Circle does that for USDC and Tether does it for USDT0. Nothing sits in a pool waiting to be stolen. Tron is the exception: its USDT can only be swapped through someone's pool. "Fast" moves only work because someone fronts the money while the slow confirmation finishes.</p></div>
+      <div><h3>What it means for you</h3><p>Use only the issuers' own rails. Never auto-swap USDT into USDC as part of a transfer: that's a trade, with its own risk and licensing.</p><div class="build"><span>Circle Gateway + CCTP for USDC</span><span>USDT0 for USDT</span></div><div class="build avoid"><span>No own bridge or solver</span><span>No auto USDT↔USDC swaps</span></div></div>
+    </div>
+  </section>
+
+  <!-- 8. Universal address stepper -->
+  <section class="card" id="universal">
+    <h2>Why no one offers "one address, any chain": it turns you into a bridge and a money transmitter.</h2>
+    <blockquote class="quote">“‘Any chain in, any chain out’ is often a swap plus a bridge, not a transfer… FinCEN treats anyone who ‘accepts CVCs and retransmits them’ as a money transmitter, while unhosted wallet providers generally are not.”<cite>Report, gap 1</cite></blockquote>
+    <div class="stepper" data-stepper>
+      <div class="fig">
+        <svg viewBox="0 0 900 330" role="img" aria-label="What a universal address must do behind the scenes, and where it becomes regulated">
+          <text x="20" y="26" class="t-b t-muted" font-size="13">"PAY ME ON ANY CHAIN": WHAT HAS TO HAPPEN BEHIND THE SCENES</text>
+          <g data-s="1"><rect x="20" y="44" width="150" height="62" rx="10" class="box"/><text x="95" y="70" text-anchor="middle" class="t-b">Sender</text><text x="95" y="90" text-anchor="middle" class="t-muted" font-size="12">pays Tron USDT</text></g>
+          <rect x="190" y="34" width="560" height="140" rx="14" class="box-gap"/>
+          <text x="206" y="160" class="t-gap t-b" font-size="13">Someone holds the money here = accepts and retransmits = money transmitter / CASP</text>
+          <g data-s="2"><path d="M170 75 H206" class="ln-brand"/><rect x="206" y="48" width="160" height="62" rx="10" class="box"/><text x="286" y="74" text-anchor="middle" class="t-b">Receive it</text><text x="286" y="94" text-anchor="middle" class="t-muted" font-size="12">into a pool you control</text></g>
+          <g data-s="3"><path d="M366 79 H392" class="ln-brand"/><rect x="392" y="48" width="160" height="62" rx="10" class="box"/><text x="472" y="74" text-anchor="middle" class="t-b">Swap</text><text x="472" y="94" text-anchor="middle" class="t-muted" font-size="12">USDT → USDC</text></g>
+          <g data-s="4"><path d="M552 79 H578" class="ln-brand"/><rect x="578" y="48" width="160" height="62" rx="10" class="box"/><text x="658" y="74" text-anchor="middle" class="t-b">Bridge</text><text x="658" y="94" text-anchor="middle" class="t-muted" font-size="12">Tron → Base</text></g>
+          <g data-s="5"><path d="M750 79 H770" class="ln-brand"/><rect x="770" y="44" width="110" height="62" rx="10" class="box"/><text x="825" y="70" text-anchor="middle" class="t-b">Receiver</text><text x="825" y="90" text-anchor="middle" class="t-muted" font-size="12">gets Base USDC</text></g>
+          <g data-s="6" font-size="12">
+            <rect x="20" y="196" width="270" height="118" rx="10" class="box"/><text x="36" y="220" class="t-b">What it costs</text>
+            <text x="36" y="244" class="t-muted">US licences: $0.5–1.5M, 1–3 years</text>
+            <text x="36" y="264" class="t-muted">Money-laundering checks: $60–500k/yr</text>
+            <text x="36" y="284" class="t-muted">Cash parked on every chain</text>
+            <text x="36" y="304" class="t-muted">EU: CASP + PSD2 licence for USDC</text>
+          </g>
+          <g data-s="7" font-size="12">
+            <rect x="310" y="196" width="270" height="118" rx="10" class="box"/><text x="326" y="220" class="t-b">What can go wrong</text>
+            <text x="326" y="244" class="t-muted">Bridges: $2.9B lost in 34 hacks</text>
+            <text x="326" y="264" class="t-muted">Circle froze a bridge in Mar 2026,</text>
+            <text x="326" y="284" class="t-muted">withdrawals failed</text>
+            <text x="326" y="304" class="t-muted">Standards still in review</text>
+          </g>
+          <g data-s="8" font-size="12">
+            <rect x="600" y="196" width="280" height="118" rx="10" class="box-ann"/><text x="616" y="220" class="t-b">Same address, different owner</text>
+            <text x="616" y="244" class="t-mono" font-size="11">0xABC on Ethereum = Wintermute</text>
+            <text x="616" y="264" class="t-mono" font-size="11">0xABC on Optimism = empty</text>
+            <text x="616" y="284" class="t-muted">An attacker deployed there first</text>
+            <text x="616" y="304" class="t-gap t-b">20M OP lost (2022)</text>
+          </g>
+        </svg>
+      </div>
+      <div class="controls"><button type="button" data-prev>Back</button><button type="button" class="primary" data-next>Play step by step</button><span class="count" data-count>8 steps</span></div>
+      <ol class="steps">
+        <li data-cap>Someone pays your "universal address" with USDT on Tron.</li>
+        <li data-cap>To convert it, a company has to receive that money into something it controls.</li>
+        <li data-cap>Then swap USDT for USDC, which is a trade with a price.</li>
+        <li data-cap>Then move it to another chain over a bridge, which is the most-hacked part of crypto.</li>
+        <li data-cap>Only then does the receiver get USDC on Base. Steps 2–4 are "accept and retransmit": regulated money transmission.</li>
+        <li data-cap>That means licences in every market and permanent compliance costs.</li>
+        <li data-cap>Plus hacks, issuer freezes, and standards that aren't final.</li>
+        <li data-cap>Even the "simple" version breaks: the same address can belong to a stranger on another chain.</li>
+      </ol>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>It isn't that nobody thought of it. A universal address needs a middleman who takes your money on one chain and hands out different money on another. In law that middleman is a money transmitter, which costs millions and years to license, and in practice it's a bridge, which is the most attacked thing in crypto. It only pays off at very large volume.</p></div>
+      <div><h3>What it means for you</h3><p>Promise "pay any WondrPay name from wherever your dollars are", not "one address on every chain". The receiver picks which chain they want, and the issuer rail delivers it, signed by the sender.</p><div class="build"><span>Receiver chooses their chain</span><span>Issuer rails only</span></div><div class="build avoid"><span>Don't promise a magic universal address</span></div></div>
+    </div>
+  </section>
+
+  <!-- 9. Refunds -->
+  <section class="card" id="refunds">
+    <h2>No refunds or disputes in crypto, because card fees are what pay for chargebacks.</h2>
+    <blockquote class="quote">“Mastercard estimates 261M chargebacks in 2025, worth $33.79B. Large merchants report $151.88 of internal cost per chargeback… Stablecoin acceptance sells on low fees, so no margin exists to fund a dispute desk.”<cite>Report, gap 3</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 330" role="img" aria-label="Where a $100 payment's fee goes on cards, plain stablecoins and WondrPay with buyer protection">
+        <g>
+          <text x="20" y="28" class="t-b">Card payment of $100</text>
+          <rect x="20" y="40" width="560" height="34" rx="6" class="bar"/><text x="34" y="62" class="t-on-brand t-b" font-size="13">merchant gets ~$97–98</text>
+          <rect x="584" y="40" width="40" height="34" rx="6" class="bar-gap"/>
+          <path d="M604 74 V96 H650" class="ln"/><rect x="650" y="80" width="230" height="40" rx="8" class="box"/><text x="664" y="98" font-size="12">2–3% fee pays for the</text><text x="664" y="113" font-size="12">dispute desk and fraud</text>
+        </g>
+        <g>
+          <text x="20" y="146" class="t-b">Plain stablecoin payment of $100</text>
+          <rect x="20" y="158" width="620" height="34" rx="6" class="bar"/><text x="34" y="180" class="t-on-brand t-b" font-size="13">merchant gets ~$99.99</text>
+          <path d="M640 175 H650" class="ln"/><rect x="650" y="156" width="230" height="40" rx="8" class="box-gap"/><text x="664" y="174" class="t-gap" font-size="12">nothing left over, so</text><text x="664" y="189" class="t-gap" font-size="12">no refunds, no disputes</text>
+        </g>
+        <g>
+          <text x="20" y="232" class="t-b t-brand">WondrPay with buyer protection</text>
+          <rect x="20" y="244" width="590" height="34" rx="6" class="bar"/><text x="34" y="266" class="t-on-brand t-b" font-size="13">merchant gets ~$99.2–99.5 (fee is a judgment, not sourced)</text>
+          <rect x="614" y="244" width="22" height="34" rx="4" class="bar-lime"/>
+          <path d="M625 278 V300 H650" class="ln-brand"/><rect x="650" y="274" width="230" height="50" rx="8" class="box-lime"/><text x="664" y="294" class="t-on-lime" font-size="12">opt-in fee → loss reserve →</text><text x="664" y="311" class="t-on-lime" font-size="12">refund case on Arkiv + arbiter</text>
+        </g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>When you dispute a card payment, someone pays for that process, and it comes out of the 2–3% the shop pays on every sale. Stablecoins are popular because they skip that fee, so nothing is left to pay for refunds. The law doesn't require one either: the US stablecoin law has no error-resolution rule, and Stripe's own stablecoin payments say "Dispute support: No".</p></div>
+      <div><h3>What it means for you</h3><p>This is your strongest opening. You already have refund cases and receipts. Add an escrow checkout (the Coinbase/Shopify pattern) and a small opt-in protection fee that funds a reserve, priced so it doesn't invite fake claims.</p><div class="build"><span>Escrow checkout</span><span>Published refund deadlines</span><span>Opt-in protection fee</span><span>Test with 20 merchants</span></div></div>
+    </div>
+  </section>
+
+  <!-- 10. Mandates -->
+  <section class="card" id="mandates">
+    <h2>The only pull payment every wallet supports is also the drainer's favourite tool.</h2>
+    <blockquote class="quote">“Signature phishing cost about $494M in 2024 and $83.85M in 2025, and Permit/Permit2 accounted for 38% of large-case losses… Even NPCI concluded that P2P pull was too dangerous.”<cite>Report, gap 4</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 270" role="img" aria-label="An unlimited token approval compared with a capped, revocable mandate">
+        <g>
+          <rect x="20" y="20" width="410" height="230" rx="14" class="box-gap"/>
+          <text x="40" y="48" class="t-gap t-b">Today: "approve unlimited"</text>
+          <rect x="40" y="64" width="370" height="44" rx="8" class="box"/><text x="56" y="91" class="t-mono" font-size="13">allow 0xShop to take: ∞ USDT, forever</text>
+          <text x="40" y="136" class="t-muted" font-size="13">One fake site gets the same signature, and</text>
+          <text x="40" y="156" class="t-muted" font-size="13">can empty the wallet at any time.</text>
+          <text x="40" y="196" class="t-gap t-b">$494M stolen this way in 2024</text>
+          <text x="40" y="222" class="t-muted" font-size="12">India banned P2P collect requests on 1 Oct 2025</text>
+        </g>
+        <g>
+          <rect x="470" y="20" width="410" height="230" rx="14" class="box-live"/>
+          <text x="490" y="48" class="t-live t-b">WondrPay mandate (like UPI Circle)</text>
+          <g font-size="13">
+            <rect x="490" y="64" width="370" height="30" rx="7" class="box"/><text x="504" y="84" class="t-mono" font-size="12">only to: amaron.wondrpay.eth</text>
+            <rect x="490" y="100" width="180" height="30" rx="7" class="box"/><text x="504" y="120" class="t-mono" font-size="12">max $5 per pull</text>
+            <rect x="680" y="100" width="180" height="30" rx="7" class="box"/><text x="694" y="120" class="t-mono" font-size="12">max $15 / month</text>
+            <rect x="490" y="136" width="180" height="30" rx="7" class="box"/><text x="504" y="156" class="t-mono" font-size="12">ends after 3 boxes</text>
+            <rect x="680" y="136" width="180" height="30" rx="7" class="box"/><text x="694" y="156" class="t-mono" font-size="12">no pull &lt;24 h old</text>
+          </g>
+          <rect x="490" y="184" width="150" height="36" rx="18" class="box-brand"/><text x="565" y="207" text-anchor="middle" class="t-on-brand t-b" font-size="13">Revoke in 1 tap</text>
+          <text x="656" y="200" class="t-muted" font-size="12">listed in a public registry,</text><text x="656" y="216" class="t-muted" font-size="12">World ID above the cap</text>
+        </g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>For a shop to charge you later (a subscription), crypto wallets usually ask you to sign "this address may take my tokens". Drainers trick people into signing exactly that. The safer standard (scoped permissions with limits) is still a draft and only works in a few wallets. UPI went through the same thing and switched off person-to-person pull requests entirely.</p></div>
+      <div><h3>What it means for you</h3><p>Your Autopay already caps total spend on-chain. Add the remaining rules: one merchant, per-pull and monthly caps, a cooling-off period, a public list and one-tap revoke.</p><div class="build"><span>Mandate registry</span><span>One-tap revoke</span><span>Pre-sign drainer warning (AI)</span></div><div class="build avoid"><span>No P2P collect</span><span>No unlimited approvals</span></div></div>
+    </div>
+  </section>
+
+  <!-- 11. Blueprint -->
+  <section class="card" id="blueprint">
+    <h2>WondrPay v2: be the rulebook and the name lookup, and let the issuers move the money.</h2>
+    <blockquote class="quote">“The v2 thesis is ‘UPI's rulebook layer for stablecoins’: a non-custodial app plus an open spec… a handle resolver… a signed payment-request object… a receipt, refund and dispute ledger… a mandate registry.”<cite>Report, blueprint</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 430" role="img" aria-label="WondrPay version 2 architecture: app and AI helpers on top, four open-spec modules, issuer rails and chains below">
+        <rect x="20" y="20" width="620" height="60" rx="12" class="box"/>
+        <text x="40" y="46" class="t-b">WondrPay app</text><text x="40" y="66" class="t-muted" font-size="12">PIN / fingerprint · World ID for risky actions · your key never leaves the phone</text>
+        <rect x="660" y="20" width="220" height="200" rx="12" class="box-ann"/>
+        <text x="676" y="44" class="t-ann t-b">AI helpers, with limits</text>
+        <g font-size="12">
+          <text x="676" y="70">• explains before you sign</text>
+          <text x="676" y="92">• agent wallet with caps</text>
+          <text x="676" y="114">• refund case copilot</text>
+          <text x="676" y="136">• merchant reconciliation</text>
+          <text x="676" y="158">• "send Priya 20 USDT"</text>
+          <text x="676" y="190" class="t-muted">read-only by default,</text>
+          <text x="676" y="208" class="t-muted">always a confirm screen</text>
+        </g>
+        <text x="20" y="112" class="t-b t-muted" font-size="13">OPEN SPEC (THE RULEBOOK LAYER)</text>
+        <g>
+          <rect x="20" y="124" width="148" height="96" rx="12" class="box-brand"/><text x="94" y="152" text-anchor="middle" class="t-on-brand t-b">Name lookup</text><text x="94" y="174" text-anchor="middle" class="t-on-brand" font-size="11">name.eth → chain</text><text x="94" y="190" text-anchor="middle" class="t-on-brand" font-size="11">preferences +</text><text x="94" y="206" text-anchor="middle" class="t-on-brand" font-size="11">verified name</text>
+          <rect x="178" y="124" width="148" height="96" rx="12" class="box-brand"/><text x="252" y="152" text-anchor="middle" class="t-on-brand t-b">Signed request</text><text x="252" y="174" text-anchor="middle" class="t-on-brand" font-size="11">one QR that</text><text x="252" y="190" text-anchor="middle" class="t-on-brand" font-size="11">becomes EIP-681</text><text x="252" y="206" text-anchor="middle" class="t-on-brand" font-size="11">or Solana Pay</text>
+          <rect x="336" y="124" width="148" height="96" rx="12" class="box-brand"/><text x="410" y="152" text-anchor="middle" class="t-on-brand t-b">Receipts + refunds</text><text x="410" y="174" text-anchor="middle" class="t-on-brand" font-size="11">Arkiv ledger,</text><text x="410" y="190" text-anchor="middle" class="t-on-brand" font-size="11">published refund</text><text x="410" y="206" text-anchor="middle" class="t-on-brand" font-size="11">deadlines</text>
+          <rect x="494" y="124" width="146" height="96" rx="12" class="box-brand"/><text x="567" y="152" text-anchor="middle" class="t-on-brand t-b">Mandates</text><text x="567" y="174" text-anchor="middle" class="t-on-brand" font-size="11">Autopay with</text><text x="567" y="190" text-anchor="middle" class="t-on-brand" font-size="11">caps + one-tap</text><text x="567" y="206" text-anchor="middle" class="t-on-brand" font-size="11">revoke</text>
+        </g>
+        <text x="20" y="252" class="t-b t-muted" font-size="13">MONEY MOVES HERE, SIGNED BY THE USER'S KEY (NOT BY WONDRPAY)</text>
+        <g>
+          <rect x="20" y="264" width="200" height="56" rx="12" class="box-live"/><text x="120" y="288" text-anchor="middle" class="t-b">Whitechain relayer</text><text x="120" y="306" text-anchor="middle" class="t-muted" font-size="11">gasless USDT (yours)</text>
+          <rect x="230" y="264" width="210" height="56" rx="12" class="box-live"/><text x="335" y="288" text-anchor="middle" class="t-b">Circle CCTP + Gateway</text><text x="335" y="306" text-anchor="middle" class="t-muted" font-size="11">USDC across chains</text>
+          <rect x="450" y="264" width="190" height="56" rx="12" class="box-live"/><text x="545" y="288" text-anchor="middle" class="t-b">USDT0</text><text x="545" y="306" text-anchor="middle" class="t-muted" font-size="11">USDT across chains</text>
+          <rect x="650" y="264" width="230" height="56" rx="12" class="box-live"/><text x="765" y="288" text-anchor="middle" class="t-b">Licensed partners</text><text x="765" y="306" text-anchor="middle" class="t-muted" font-size="11">cash in/out, cards</text>
+        </g>
+        <text x="20" y="352" class="t-b t-muted" font-size="13">CHAINS, BY JOB</text>
+        <g font-size="12">
+          <rect x="20" y="364" width="160" height="50" rx="10" class="box"/><text x="100" y="385" text-anchor="middle" class="t-b">Whitechain</text><text x="100" y="402" text-anchor="middle" class="t-muted" font-size="11">users (WhiteBIT)</text>
+          <rect x="190" y="364" width="160" height="50" rx="10" class="box"/><text x="270" y="385" text-anchor="middle" class="t-b">Base · Monad</text><text x="270" y="402" text-anchor="middle" class="t-muted" font-size="11">cheap spend legs</text>
+          <rect x="360" y="364" width="160" height="50" rx="10" class="box"/><text x="440" y="385" text-anchor="middle" class="t-b">Tempo</text><text x="440" y="402" text-anchor="middle" class="t-muted" font-size="11">merchant invoices</text>
+          <rect x="530" y="364" width="160" height="50" rx="10" class="box"/><text x="610" y="385" text-anchor="middle" class="t-b">Arc</text><text x="610" y="402" text-anchor="middle" class="t-muted" font-size="11">USDC ↔ EURC FX</text>
+          <rect x="700" y="364" width="180" height="50" rx="10" class="box"/><text x="790" y="385" text-anchor="middle" class="t-b">Celo · MiniPay</text><text x="790" y="402" text-anchor="middle" class="t-muted" font-size="11">phone users (later)</text>
+        </g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>Picture WondrPay as the "rules and records" company, not the "money moving" company. The four blue boxes are what you own and publish openly. The green row is other people's rails, which the user's own key uses. The bottom row is which chain does which job. That split keeps you legally lighter and safer, and makes you something other wallets can plug into.</p></div>
+      <div><h3>What it means for you</h3><p>Most of the blue boxes exist in some form today. The work is turning them into a written spec other wallets can adopt, then adding Base and Gateway as the first extra chains.</p><div class="build"><span>Write the spec (v0.1)</span><span>Add Base + Gateway</span><span>AI with caps</span></div></div>
+    </div>
+  </section>
+
+  <!-- 12. Roadmap -->
+  <section class="card" id="roadmap">
+    <h2>The order to build it in</h2>
+    <blockquote class="quote">“Put refund-protected checkout in front of 20 WhiteBIT-corridor merchants and measure whether buyers pay more, return more often, or both. That single number tells you whether the protection fee, the core of the business model, is real.”<cite>Report, conclusion</cite></blockquote>
+    <div class="fig">
+      <svg viewBox="0 0 900 300" role="img" aria-label="Four-phase roadmap from pilot to scaling corridors">
+        <line x1="30" y1="60" x2="870" y2="60" class="ln"/>
+        <g>
+          <circle cx="60" cy="60" r="12" class="box-brand"/><text x="60" y="65" text-anchor="middle" class="t-on-brand t-b" font-size="12">0</text>
+          <text x="30" y="38" class="t-b">Now – 3 months</text>
+          <rect x="20" y="84" width="200" height="196" rx="12" class="box"/>
+          <g font-size="12"><text x="34" y="108" class="t-b">Pilot on Whitechain</text><text x="34" y="132">• switch to official USDT</text><text x="34" y="152">• write request spec v0.1</text><text x="34" y="172">• per-chain ENS records</text><text x="34" y="192">• World ID on refunds</text><text x="34" y="212">• Builders Program grant</text><text x="34" y="244" class="t-live t-b">Goal: 20–50 merchants</text><text x="34" y="262" class="t-live">using refunds</text></g>
+        </g>
+        <g>
+          <circle cx="285" cy="60" r="12" class="box-brand"/><text x="285" y="65" text-anchor="middle" class="t-on-brand t-b" font-size="12">1</text>
+          <text x="245" y="38" class="t-b">3 – 9 months</text>
+          <rect x="235" y="84" width="200" height="196" rx="12" class="box"/>
+          <g font-size="12"><text x="249" y="108" class="t-b">Multi-chain receive</text><text x="249" y="132">• Base + Monad legs</text><text x="249" y="152">• Gateway, USDT0</text><text x="249" y="172">• receiver picks chain</text><text x="249" y="192">• escrow checkout</text><text x="249" y="212">• Autopay v2 caps</text><text x="249" y="244" class="t-live t-b">Goal: another wallet</text><text x="249" y="262" class="t-live">resolves your names</text></g>
+        </g>
+        <g>
+          <circle cx="500" cy="60" r="12" class="box-brand"/><text x="500" y="65" text-anchor="middle" class="t-on-brand t-b" font-size="12">2</text>
+          <text x="460" y="38" class="t-b">9 – 18 months</text>
+          <rect x="450" y="84" width="200" height="196" rx="12" class="box"/>
+          <g font-size="12"><text x="464" y="108" class="t-b">Rulebook + federation</text><text x="464" y="132">• open name lookup</text><text x="464" y="152">• dispute desk, then</text><text x="464" y="172">  outside arbitration</text><text x="464" y="192">• Tempo invoices</text><text x="464" y="212">• AI agent wallet</text><text x="464" y="244" class="t-live t-b">Goal: 3–5 wallets join;</text><text x="464" y="262" class="t-live">fee funds the reserve</text></g>
+        </g>
+        <g>
+          <circle cx="715" cy="60" r="12" class="box-brand"/><text x="715" y="65" text-anchor="middle" class="t-on-brand t-b" font-size="12">3</text>
+          <text x="675" y="38" class="t-b">18 months +</text>
+          <rect x="665" y="84" width="215" height="196" rx="12" class="box"/>
+          <g font-size="12"><text x="679" y="108" class="t-b">Scale corridors</text><text x="679" y="132">• MiniPay mini app</text><text x="679" y="152">• pay national QR codes</text><text x="679" y="172">  via a licensed partner</text><text x="679" y="192">  (Pix first)</text><text x="679" y="212">• X9.150 if adopted</text><text x="679" y="244" class="t-gap t-b">Not yet: India</text><text x="679" y="262" class="t-gap">domestic retail</text></g>
+        </g>
+      </svg>
+    </div>
+    <div class="two">
+      <div><h3>In plain words</h3><p>Prove the refund idea where you already have a head start (Whitechain and WhiteBIT users), then add chains, then invite other wallets to use your rules. Each phase has one number that says whether it worked.</p></div>
+      <div><h3>The first experiment</h3><p>Refund-protected checkout for 20 merchants. If buyers spend more or come back more often, the protection fee is a real business. If not, you learn it cheaply before building the rest.</p><div class="build"><span>20-merchant refund test</span><span>Apply for Whitechain grant</span></div></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Every number and quote here comes from <b>reports/Stablecoin payment chains compared.md</b> in the WondrPay repo, which links its sources. Fees come from the live benchmark in <b>reports/Chain benchmark results.md</b>. Recommendations are analysis, not sourced fact, and nothing here is legal advice.</p>
+    <p class="src">Research date: 9 November 2026.</p>
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('[data-stepper]').forEach(function (box) {
+  var caps = Array.prototype.slice.call(box.querySelectorAll('[data-cap]'));
+  var marks = Array.prototype.slice.call(box.querySelectorAll('[data-s]'));
+  var next = box.querySelector('[data-next]'), prev = box.querySelector('[data-prev]'), count = box.querySelector('[data-count]');
+  var i = -1, n = caps.length;
+  function show() {
+    if (i < 0) { box.removeAttribute('data-active'); caps.forEach(function (c) { c.classList.remove('on') }); marks.forEach(function (m) { m.classList.remove('on') }); next.textContent = 'Play step by step'; count.textContent = n + ' steps'; return }
+    box.setAttribute('data-active', '');
+    caps.forEach(function (c, k) { c.classList.toggle('on', k === i) });
+    marks.forEach(function (m) { var s = m.getAttribute('data-s').split(',').map(Number); m.classList.toggle('on', s.some(function (x) { return x <= i + 1 })) });
+    next.textContent = i === n - 1 ? 'Show all' : 'Next step';
+    count.textContent = 'Step ' + (i + 1) + ' of ' + n;
+  }
+  next.addEventListener('click', function () { i = i === n - 1 ? -1 : i + 1; show() });
+  prev.addEventListener('click', function () { if (i >= 0) { i -= 1; show() } });
+  caps.forEach(function (c, k) { c.style.cursor = 'pointer'; c.addEventListener('click', function () { i = k; show() }) });
+  show();
+});
+</script>

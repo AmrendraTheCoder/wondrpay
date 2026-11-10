@@ -1,0 +1,296 @@
+1
+00:00:00,450 --> 00:00:02,320
+Everyone asks us the same thing.
+
+2
+00:00:02,360 --> 00:00:06,346
+Why WondrPay, when cards, crypto wallets and Binance Pay
+
+3
+00:00:06,226 --> 00:00:07,313
+already exist?
+
+4
+00:00:07,353 --> 00:00:08,736
+Here's the honest answer.
+
+5
+00:00:08,776 --> 00:00:11,749
+Each of them breaks in one of three places:
+
+6
+00:00:11,629 --> 00:00:13,607
+cost, safety, or simplicity.
+
+7
+00:00:13,647 --> 00:00:15,257
+We fixed all three at once.
+
+8
+00:00:16,137 --> 00:00:17,210
+Cards and Stripe.
+
+9
+00:00:17,250 --> 00:00:20,712
+A shop pays 2 to 3 percent, waits days for its money,
+
+10
+00:00:20,592 --> 00:00:22,604
+and loses to chargeback fraud.
+
+11
+00:00:22,644 --> 00:00:24,973
+With WondrPay, it pays half a percent,
+
+12
+00:00:24,853 --> 00:00:27,589
+the money lands in its own wallet in seconds,
+
+13
+00:00:27,469 --> 00:00:30,321
+and a refund needs proof from a verified human,
+
+14
+00:00:30,201 --> 00:00:32,763
+stored on Arkiv, where no one can edit it.
+
+15
+00:00:33,643 --> 00:00:35,875
+Crypto wallets, like MetaMask.
+
+16
+00:00:35,915 --> 00:00:37,356
+A seed phrase you'll lose.
+
+17
+00:00:37,396 --> 00:00:38,913
+Gas you have to buy first.
+
+18
+00:00:38,953 --> 00:00:42,698
+42-character addresses that scammers copy with lookalikes.
+
+19
+00:00:42,738 --> 00:00:44,088
+That's address poisoning.
+
+20
+00:00:44,128 --> 00:00:46,880
+And approve buttons that can drain a wallet years later.
+
+21
+00:00:46,920 --> 00:00:48,773
+WondrPay has no seed phrase.
+
+22
+00:00:48,813 --> 00:00:50,860
+The key is locked by your fingerprint,
+
+23
+00:00:50,740 --> 00:00:51,570
+on your phone.
+
+24
+00:00:51,610 --> 00:00:53,152
+No gas: we pay it.
+
+25
+00:00:53,192 --> 00:00:56,270
+You pay names, like priya.wondrpay.eth,
+
+26
+00:00:56,150 --> 00:00:58,773
+and shops carry a verified badge.
+
+27
+00:00:58,813 --> 00:01:00,567
+And there are no approvals at all.
+
+28
+00:01:00,607 --> 00:01:03,528
+You sign one exact amount, to one recipient,
+
+29
+00:01:03,408 --> 00:01:04,865
+valid for 10 minutes.
+
+30
+00:01:04,905 --> 00:01:07,449
+Even our own relayer can't change where it goes.
+
+31
+00:01:08,329 --> 00:01:10,865
+Custodial apps, like Binance Pay.
+
+32
+00:01:10,905 --> 00:01:12,961
+Easy, but the money isn't yours.
+
+33
+00:01:13,001 --> 00:01:15,917
+Accounts get frozen, and platforms can fail.
+
+34
+00:01:15,957 --> 00:01:17,763
+WondrPay never holds your money.
+
+35
+00:01:17,803 --> 00:01:19,640
+It goes straight from your wallet,
+
+36
+00:01:19,520 --> 00:01:20,347
+to the shop's.
+
+37
+00:01:21,227 --> 00:01:24,184
+Crypto checkouts, like Coinbase Commerce,
+
+38
+00:01:24,064 --> 00:01:25,084
+stop at paid.
+
+39
+00:01:25,124 --> 00:01:27,909
+Refunds are manual, there are no subscriptions,
+
+40
+00:01:27,789 --> 00:01:29,780
+and the customer still needs gas.
+
+41
+00:01:29,820 --> 00:01:30,918
+We ship all three.
+
+42
+00:01:31,798 --> 00:01:33,407
+What's new isn't one feature.
+
+43
+00:01:33,447 --> 00:01:34,691
+It's the combination.
+
+44
+00:01:34,731 --> 00:01:37,775
+UPI's two-tap experience, on digital dollars,
+
+45
+00:01:37,655 --> 00:01:40,438
+with one real human behind every account,
+
+46
+00:01:40,318 --> 00:01:41,543
+through World ID.
+
+47
+00:01:41,583 --> 00:01:43,734
+That one rule makes everything else safe.
+
+48
+00:01:43,774 --> 00:01:45,869
+Cashback can't be farmed by bots.
+
+49
+00:01:45,909 --> 00:01:48,347
+Refunds can't be abused by fake accounts.
+
+50
+00:01:48,387 --> 00:01:51,340
+And every reward is paid from fees we've already earned,
+
+51
+00:01:51,220 --> 00:01:52,858
+never from a token we printed.
+
+52
+00:01:53,738 --> 00:01:56,787
+We go shops first, because shops bring shoppers.
+
+53
+00:01:56,827 --> 00:02:00,201
+A shop joins in minutes, with our WooCommerce plugin,
+
+54
+00:02:00,081 --> 00:02:02,656
+a Shopify guide, or just a payment link.
+
+55
+00:02:02,696 --> 00:02:04,586
+No code, no setup fee.
+
+56
+00:02:04,626 --> 00:02:07,594
+We start where people already hold dollars,
+
+57
+00:02:07,474 --> 00:02:11,370
+and W Group already has users: Gulf workers paying family
+
+58
+00:02:11,250 --> 00:02:14,351
+in India, Ukrainian freelancers paid in USDT,
+
+59
+00:02:14,231 --> 00:02:17,265
+and savers in Turkey, Nigeria and Argentina.
+
+60
+00:02:17,305 --> 00:02:19,605
+Shoppers come for zero gas and cashback,
+
+61
+00:02:19,485 --> 00:02:22,057
+and stay because it's faster than their bank.
+
+62
+00:02:22,097 --> 00:02:25,034
+10 free transfers a month to friends pulls in the next
+
+63
+00:02:24,914 --> 00:02:25,295
+user.
+
+64
+00:02:25,335 --> 00:02:27,283
+WhiteBIT is the way in and out:
+
+65
+00:02:27,163 --> 00:02:29,405
+dollars in, rupees and hryvnias out.
+
+66
+00:02:29,445 --> 00:02:33,935
+Year one: 5,000 shops, and 100,000 verified people.
+
+67
+00:02:34,815 --> 00:02:36,818
+For mainnet, we have three steps.
+
+68
+00:02:36,858 --> 00:02:38,671
+An audit of our three contracts.
+
+69
+00:02:38,711 --> 00:02:40,388
+The fee split, on-chain.
+
+70
+00:02:40,428 --> 00:02:43,483
+And key recovery, so a lost phone isn't lost money.
+
+71
+00:02:43,523 --> 00:02:46,531
+Everything else runs today, on Whitechain testnet.
+
+72
+00:02:47,411 --> 00:02:48,609
+Cheaper than cards.
+
+73
+00:02:48,649 --> 00:02:49,876
+Safer than wallets.
+
+74
+00:02:49,916 --> 00:02:51,922
+Yours, unlike exchanges.
+

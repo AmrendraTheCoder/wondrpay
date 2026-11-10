@@ -1,0 +1,383 @@
+1
+00:00:00,000 --> 00:00:02,640
+In October alone, India's UPI handled 25
+
+2
+00:00:02,660 --> 00:00:04,720
+billion payments and over 300 billion
+
+3
+00:00:04,740 --> 00:00:05,970
+dollars in volume.
+
+4
+00:00:06,140 --> 00:00:08,460
+Even in a developing country of nearly 1.5
+
+5
+00:00:08,480 --> 00:00:10,400
+billion people, the model works.
+
+6
+00:00:10,420 --> 00:00:12,660
+WondrPay brings it to digital dollars.
+
+7
+00:00:12,680 --> 00:00:15,470
+Any website can take it with one API key.
+
+8
+00:00:15,980 --> 00:00:18,700
+Here, Amaron, our demo store shows the
+
+9
+00:00:18,720 --> 00:00:19,380
+integration.
+
+10
+00:00:19,400 --> 00:00:21,680
+You load our SDK, add the pay button and
+
+11
+00:00:21,700 --> 00:00:24,250
+sign each order on the server.
+
+12
+00:00:27,520 --> 00:00:28,850
+For example,
+
+13
+00:00:29,460 --> 00:00:32,560
+here I am going to add a watch and a kurta
+
+14
+00:00:32,580 --> 00:00:34,750
+to the bag and place the order.
+
+15
+00:00:35,120 --> 00:00:38,460
+The store's server prices it,
+
+16
+00:00:38,480 --> 00:00:42,110
+signs it and the WondrPay turns it into a QR.
+
+17
+00:00:42,160 --> 00:00:44,060
+On my phone, I can scan it.
+
+18
+00:00:44,080 --> 00:00:46,020
+Before paying, the app checks who created
+
+19
+00:00:46,040 --> 00:00:48,040
+the order, that the amount wasn't touched,
+
+20
+00:00:48,060 --> 00:00:50,120
+the shop's signature and the expiry.
+
+21
+00:00:50,140 --> 00:00:52,460
+A six-digit PIN and it is paid.
+
+22
+00:00:52,480 --> 00:00:54,370
+Zero gas for me.
+
+23
+00:00:54,600 --> 00:00:56,660
+All of this happens through MetaMask or
+
+24
+00:00:56,680 --> 00:00:58,310
+any other wallet that you can connect.
+
+25
+00:00:58,340 --> 00:01:00,440
+A real Whitechain transaction, which our
+
+26
+00:01:00,460 --> 00:01:03,460
+relayers paid the gas for and the USDT
+
+27
+00:01:03,480 --> 00:01:05,400
+went straight to the shop's wallet.
+
+28
+00:01:05,420 --> 00:01:07,430
+No middleman holding it.
+
+29
+00:01:08,500 --> 00:01:11,490
+Now, subscriptions use the same button.
+
+30
+00:01:11,740 --> 00:01:14,960
+I scan once, I pick Autopay and I
+
+31
+00:01:14,980 --> 00:01:16,920
+approve with my PIN all through the
+
+32
+00:01:16,940 --> 00:01:17,980
+MetaMask wallet.
+
+33
+00:01:18,000 --> 00:01:19,420
+The limits live on chain.
+
+34
+00:01:19,440 --> 00:01:22,540
+Three boxes at 5 cents only to this
+
+35
+00:01:22,560 --> 00:01:24,350
+shop and I can cancel anytime.
+
+36
+00:01:24,400 --> 00:01:26,400
+In countries where stablecoin rules are
+
+37
+00:01:26,420 --> 00:01:28,620
+friendlier, any shop online can switch
+
+38
+00:01:28,640 --> 00:01:29,870
+this on today.
+
+39
+00:01:30,920 --> 00:01:33,920
+Now, both sides see every order.
+
+40
+00:01:33,940 --> 00:01:36,040
+The shopper under My orders and the shop
+
+41
+00:01:36,060 --> 00:01:39,220
+on the live dashboard read straight from
+
+42
+00:01:39,240 --> 00:01:40,120
+Arkiv.
+
+43
+00:01:40,140 --> 00:01:43,400
+Last year, $685 billion went
+
+44
+00:01:43,420 --> 00:01:46,360
+home to developing countries, $128 billion
+
+45
+00:01:46,380 --> 00:01:49,690
+to India alone at fees of around 5–6%.
+
+46
+00:01:51,020 --> 00:01:52,940
+Sending money should be this easy.
+
+47
+00:01:52,960 --> 00:01:54,390
+I scan Priya's QR.
+
+48
+00:01:55,080 --> 00:01:56,600
+priya.wondrpay.eth.
+
+49
+00:01:56,620 --> 00:01:57,940
+A name, not an address.
+
+50
+00:01:57,960 --> 00:01:58,960
+A name.
+
+51
+00:01:59,340 --> 00:02:00,380
+2.50.
+
+52
+00:02:00,400 --> 00:02:02,660
+I enter the PIN and we're done in seconds
+
+53
+00:02:02,680 --> 00:02:04,270
+with no fee and no gas.
+
+54
+00:02:04,420 --> 00:02:06,050
+Her phone shows it right away.
+
+55
+00:02:08,420 --> 00:02:11,520
+Every shop payment can win a scratch card.
+
+56
+00:02:11,540 --> 00:02:14,780
+My first one wins 1% back paid
+
+57
+00:02:14,800 --> 00:02:18,810
+in WBT as we can see here.
+
+58
+00:02:21,580 --> 00:02:22,580
+Right.
+
+59
+00:02:22,740 --> 00:02:25,760
+So, W Group has 40 million users
+
+60
+00:02:25,780 --> 00:02:28,380
+already holding USDT and we become their
+
+61
+00:02:28,400 --> 00:02:30,720
+spend button through WondrPay.
+
+62
+00:02:30,740 --> 00:02:33,820
+To claim this cashback, I have to use
+
+63
+00:02:33,840 --> 00:02:36,220
+World ID to verify that I'm a real person
+
+64
+00:02:36,240 --> 00:02:38,070
+without sharing who I actually am.
+
+65
+00:02:38,200 --> 00:02:40,140
+The app shows the request, World App
+
+66
+00:02:40,160 --> 00:02:43,050
+approves it and WBT lands in my wallet.
+
+67
+00:02:43,100 --> 00:02:45,060
+That's why cashbacks can't be farmed with
+
+68
+00:02:45,080 --> 00:02:46,530
+a pile of fresh wallets.
+
+69
+00:02:47,000 --> 00:02:49,710
+Now, see the watch arrived damaged.
+
+70
+00:02:49,940 --> 00:02:52,670
+And from my history, I can open the order,
+
+71
+00:02:52,740 --> 00:02:54,900
+pick arrived damaged, describe it and sign
+
+72
+00:02:54,920 --> 00:02:55,720
+with my PIN.
+
+73
+00:02:55,740 --> 00:02:58,780
+I'm already World ID verified, so
+
+74
+00:02:58,800 --> 00:03:01,470
+a new scan is not required at all.
+
+75
+00:03:02,360 --> 00:03:05,160
+The request is signed and stored on Arkiv.
+
+76
+00:03:05,180 --> 00:03:07,700
+Nobody, not even us, can touch it.
+
+77
+00:03:07,720 --> 00:03:10,440
+You cannot edit it or delete it.
+
+78
+00:03:10,460 --> 00:03:12,640
+On the shop's dashboard, it shows up under
+
+79
+00:03:12,660 --> 00:03:15,340
+Needs your reply from a verified human.
+
+80
+00:03:15,360 --> 00:03:18,180
+The shop can refund 20, 50 or 100% or any
+
+81
+00:03:18,200 --> 00:03:19,540
+share they choose to do it.
+
+82
+00:03:19,560 --> 00:03:21,410
+They choose 50 and they approve.
+
+83
+00:03:25,320 --> 00:03:28,160
+Now, the refund is paid on Whitechain,
+
+84
+00:03:28,180 --> 00:03:30,360
+only back to the wallet that paid and
+
+85
+00:03:30,380 --> 00:03:31,760
+never more than the order.
+
+86
+00:03:31,780 --> 00:03:34,160
+The phone gets 1.65
+
+87
+00:03:34,180 --> 00:03:36,310
+back in seconds.
+
+88
+00:03:37,840 --> 00:03:39,940
+Yeah, it received 1.65
+
+89
+00:03:39,960 --> 00:03:43,610
+USDT within a few seconds.
+
+90
+00:03:43,860 --> 00:03:45,660
+Both sides see the same record.
+
+91
+00:03:45,680 --> 00:03:47,380
+My request, the shop's answer and the
+
+92
+00:03:47,400 --> 00:03:48,460
+refund transaction.
+
+93
+00:03:48,480 --> 00:03:49,770
+No chargeback fights.
+
+94
+00:03:50,480 --> 00:03:52,920
+WondrPay, built on Whitechain, Arkiv,
+
+95
+00:03:52,940 --> 00:03:53,760
+ENS, and World ID.
+
+96
+00:03:53,780 --> 00:03:54,780
+Thank you.
