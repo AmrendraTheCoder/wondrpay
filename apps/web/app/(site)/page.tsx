@@ -177,7 +177,7 @@ export default async function Landing() {
             <div className="wp-cluster">
               <ButtonLink href="/portal" variant="primary" iconRight="arrowRight">Get API keys</ButtonLink>
               <ButtonLink href="/developers" variant="secondary">Read the docs</ButtonLink>
-              <ButtonLink href="https://github.com/AmrendraTheCoder/whitepay" variant="secondary">GitHub</ButtonLink>
+              <ButtonLink href="https://github.com/AmrendraTheCoder/wondrpay" variant="secondary">GitHub</ButtonLink>
             </div>
           </div>
         </div>

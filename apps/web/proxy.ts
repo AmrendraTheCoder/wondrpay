@@ -23,6 +23,9 @@ const CSP_SOURCES = {
 const LIMITS: [string, string, number, number][] = [
   ["/api/pay", "POST", 20, 60_000],
   ["/api/send", "POST", 20, 60_000],
+  ["/api/split", "POST", 10, 60_000],
+  ["/api/asks", "POST", 10, 60_000],
+  ["/api/deals", "POST", 30, 60_000],
   ["/api/refund", "POST", 10, 60_000],
   ["/api/world", "*", 15, 60_000],
   ["/api/names", "POST", 6, 60_000],

@@ -2,6 +2,7 @@
 import { useMemo } from "react"
 import { DueBanner } from "../due-banner"
 import { DealsBanner } from "../deals-banner"
+import { AsksBanner } from "../asks-banner"
 import { AvatarRings } from "../avatar-rings"
 import { Onboard } from "../onboard"
 import { Icon, avatarColor, initial, prettyName, useWalletData, AccountBadge, Toast, useCountUp, LogoLoader, Identicon } from "../ui"
@@ -26,7 +27,7 @@ function WalletHome({ wallet, bal, rows, name, account, displayName, toast }: Re
   const people = useMemo(() => {
     const seen = new Map<string, { address: string; name?: string }>()
     for (const r of rows ?? []) {
-      if (r.kind === "whitepay" || r.kind === "refund" || r.kind === "deal") continue // router hop, not a person
+      if (r.kind === "whitepay" || r.kind === "refund" || r.kind === "deal" || r.kind === "split") continue // router hop, not a person
       const k = r.counterparty.toLowerCase()
       if (!seen.has(k)) seen.set(k, { address: r.counterparty, name: r.counterpartyName })
     }
@@ -64,6 +65,7 @@ function WalletHome({ wallet, bal, rows, name, account, displayName, toast }: Re
       </div>
 
       <DueBanner address={wallet.address} />
+      <AsksBanner address={wallet.address} />
       <DealsBanner address={wallet.address} business={account === "business"} />
 
       {name === null && account !== "business" && (
@@ -83,6 +85,7 @@ function WalletHome({ wallet, bal, rows, name, account, displayName, toast }: Re
 
       <div className="chips">
         <a className="chip-card" href="/transactions"><span className="ic">{Icon.history()}</span><div><div className="t1">Transactions</div><div className="t2">See all</div></div></a>
+        <a className="chip-card" href="/split"><span className="ic">{Icon.repeat(24)}</span><div><div className="t1">Split</div><div className="t2 link">Pay or ask a group</div></div></a>
         <a className="chip-card" href="/deals"><span className="ic">{Icon.shield()}</span><div><div className="t1">Protected deals</div><div className="t2 link">{account === "business" ? "Custom orders" : "Buy or sell safely"}</div></div></a>
         <a className="chip-card" href="/you"><span className="ic">{Icon.id()}</span><div><div className="t1">WondrPay ID</div><div className="t2 link">{name ? "View" : "Claim"}</div></div></a>
       </div>
@@ -112,6 +115,7 @@ function WalletHome({ wallet, bal, rows, name, account, displayName, toast }: Re
       <div className="section-title">Manage your money</div>
       <div className="menu-list">
         <a className="menu-row" href="/transactions"><span className="ic">{Icon.history()}</span>See transaction history<span className="chev">{Icon.chev()}</span></a>
+        <a className="menu-row" href="/split"><span className="ic">{Icon.repeat(24)}</span>Split a payment<span className="chev">{Icon.chev()}</span></a>
         <a className="menu-row" href="/deals"><span className="ic">{Icon.shield(24)}</span>Protected deals<span className="chev">{Icon.chev()}</span></a>
         <a className="menu-row" href="/money#add"><span className="ic">{Icon.bolt(24)}</span>Add money<span className="chev">{Icon.chev()}</span></a>
         <a className="menu-row" href="/receive"><span className="ic">{Icon.receive(24)}</span>Your QR code<span className="chev">{Icon.chev()}</span></a>

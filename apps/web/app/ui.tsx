@@ -108,14 +108,14 @@ export type Activity = {
   counterpartyName?: string
   amount: string
   at: number
-  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay" | "deal"
+  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay" | "deal" | "split"
   txHash: string
   explorer: string
   source: "arkiv" | "chain"
 }
 
 export const activityLabel = (r: Activity) =>
-  r.kind === "p2m" ? "Shop QR" : r.kind === "p2p" ? "Person" : r.kind === "refund" ? "Refund" : r.kind === "autopay" ? "Autopay" : r.kind === "whitepay" ? "WondrPay" : r.kind === "deal" ? "Protected deal" : "Transfer"
+  r.kind === "p2m" ? "Shop QR" : r.kind === "p2p" ? "Person" : r.kind === "refund" ? "Refund" : r.kind === "autopay" ? "Autopay" : r.kind === "whitepay" ? "WondrPay" : r.kind === "deal" ? "Protected deal" : r.kind === "split" ? "Split" : "Transfer"
 
 /** Wallet + live data for the ACTIVE wallet (any kind): balance (Whitechain), name, unified activity
  *  (Arkiv receipts + every on-chain USDT transfer). Polls the balance and auto-detects incoming money. */

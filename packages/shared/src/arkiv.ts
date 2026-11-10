@@ -334,3 +334,21 @@ export const DealEvent = defineSchema("whitepay.dealevt", {
   signedAt: u64(),
   sig: bytes(),
 })
+
+// ---------------------------------------------------------------- money requests (see packages/server/src/asks.ts)
+/** "You owe me": one person asks another for money. Only a message, it never moves money by itself.
+ *  The payment that settles it is an ordinary person-to-person payment whose memo is `askId`. */
+export const MoneyAsk = defineSchema("whitepay.ask", {
+  askId: str().indexed(), // keccak(groupId, to, from), lowercase 0x…
+  groupId: str().indexed(), // one bill split = one group
+  from: addr().indexed(), // who is owed (asked for the money)
+  to: addr().indexed(), // who is asked to pay
+  amount: u256(),
+  note: str().optional(), // <= 80 chars, public
+  status: str().indexed(), // "open" | "paid" | "declined" | "cancelled"
+  createdAt: u64().indexed(),
+  expiresAt: u64(),
+  paidTx: str().optional(),
+  updatedAt: u64(),
+  sig: bytes(), // the asker's signature over the whole group (askGroupMessage)
+})

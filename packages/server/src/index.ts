@@ -35,3 +35,5 @@ export { RefundRecord, refundAgent, permitTypedData, allowanceState, setRefundAl
 export { claimRefund } from "./refund-allowance"
 export { PinRecord, hasSavedPin, checkSavedPin, savePin, PinError } from "./pin"
 export { createDeal, getDeal, listDeals, listEscalated, relayFund, relayAction, relayPoke, pokeDue, postDealEvent, dealSettings, actionNonce, DealError, type DealView, type DealEventView } from "./deals"
+export { relaySplit, SplitError } from "./split"
+export { listAsks, createAsks, actOnAsk, markAskPaid, AskError, type AskView } from "./asks"

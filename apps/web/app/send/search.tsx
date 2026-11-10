@@ -14,10 +14,11 @@ import "./search.css"
 export type Payee = { address: Address; name?: string; displayName?: string; kind?: string; source?: string }
 type Recent = { address: Address; name?: string; at: number }
 
-const looksResolvable = (q: string) => isAddress(q) || /^[a-z0-9][a-z0-9-]{1,30}(\.whitepay)?(\.eth)?$/i.test(q)
-const titleOf = (p: { displayName?: string; name?: string; address: string }) => p.displayName ?? p.name?.replace(/\.whitepay\.eth$/, "") ?? short(p.address)
+const looksResolvable = (q: string) => isAddress(q) || /^[a-z0-9][a-z0-9-]{1,30}(\.(whitepay|wondrpay))?(\.eth)?$/i.test(q)
+const titleOf = (p: { displayName?: string; name?: string; address: string }) => p.displayName ?? p.name?.replace(/\.(whitepay|wondrpay)\.eth$/, "") ?? short(p.address)
 
-export function PayeeSearch({ initialQuery = "", onPick }: { initialQuery?: string; onPick: (p: Payee) => void }) {
+/** `picker`: used inside another flow to choose a person, so the shortcuts that leave the page are hidden. */
+export function PayeeSearch({ initialQuery = "", onPick, picker = false }: { initialQuery?: string; onPick: (p: Payee) => void; picker?: boolean }) {
   const [q, setQ] = useState(initialQuery)
   const [recents, setRecents] = useState<Recent[] | null>(null)
   const [hit, setHit] = useState<Payee | null>(null)
@@ -36,7 +37,7 @@ export function PayeeSearch({ initialQuery = "", onPick }: { initialQuery?: stri
     fetch(`/api/activity?address=${w.address}`).then((r) => r.json()).then((d) => {
       const seen = new Map<string, Recent>()
       for (const r of (d.rows ?? []) as { counterparty: string; counterpartyName?: string; at: number; kind: string }[]) {
-        if (r.kind === "whitepay" || r.kind === "refund" || r.kind === "deal") continue
+        if (r.kind === "whitepay" || r.kind === "refund" || r.kind === "deal" || r.kind === "split") continue
         const k = r.counterparty.toLowerCase()
         if (k === me.current || seen.has(k)) continue
         seen.set(k, { address: r.counterparty as Address, name: r.counterpartyName, at: r.at })
@@ -113,14 +114,16 @@ export function PayeeSearch({ initialQuery = "", onPick }: { initialQuery?: stri
           : <button className="ps-paste" onClick={paste}>Paste</button>}
       </div>
 
-      <div className="ps-actions">
-        <a className="ps-action" href="/scan"><span aria-hidden>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 12h8" /></svg>
-        </span>Scan a QR</a>
-        <a className="ps-action" href="/receive"><span aria-hidden>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2z" /></svg>
-        </span>My QR</a>
-      </div>
+      {!picker && (
+        <div className="ps-actions">
+          <a className="ps-action" href="/scan"><span aria-hidden>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 12h8" /></svg>
+          </span>Scan a QR</a>
+          <a className="ps-action" href="/receive"><span aria-hidden>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2z" /></svg>
+          </span>My QR</a>
+        </div>
+      )}
 
       <p className="sr-only" role="status" aria-live="polite">{status}</p>
 

@@ -49,8 +49,8 @@ export default function Security() {
           <div className="wp-stack">
             <SectionHeader id="verify" eyebrow="Verify it yourself" title="A test suite anyone can run." description="28 live checks covering CSP nonces, clickjacking, CSRF, oversized bodies, forged orders, SSRF, forged and replayed webhooks, price tampering and SDK integrity." />
             <div className="wp-cluster">
-              <ButtonLink href="https://github.com/AmrendraTheCoder/whitepay/blob/main/scripts/security-check.sh" variant="secondary">View the suite</ButtonLink>
-              <ButtonLink href="https://github.com/AmrendraTheCoder/whitepay/security" variant="ghost">Report a vulnerability</ButtonLink>
+              <ButtonLink href="https://github.com/AmrendraTheCoder/wondrpay/blob/main/scripts/security-check.sh" variant="secondary">View the suite</ButtonLink>
+              <ButtonLink href="https://github.com/AmrendraTheCoder/wondrpay/security" variant="ghost">Report a vulnerability</ButtonLink>
             </div>
           </div>
           <CodeBlock code={SUITE} label="Security suite output" />

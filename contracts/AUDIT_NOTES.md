@@ -76,7 +76,7 @@ Whitechain Sepolia (chain 1874): `0x6260d61536cbc49AC69DF3edEfc0614D79EDb330`, v
    - seller late to deliver → refund
    - buyer silent after delivery → release
    - seller silent on a dispute → refund
-   - buyer silent on a partial offer → settled at the offer
+   - buyer silent on a partial offer → escalated to the arbiter (silence never accepts a lowball offer)
    - arbiter silent → refund
 4. **Push with a fallback to pull:** a recipient the token blocklists doesn't freeze the deal. Their payout is moved to `owed` and claimed with `withdraw(to)`.
 5. **`actWithSig` uses one sequential nonce per signer**, shared across all of that signer's deals. Wallets have to sign actions in order; the server reads `nonces(signer)` first.
@@ -88,3 +88,14 @@ Whitechain Sepolia (chain 1874): `0x6260d61536cbc49AC69DF3edEfc0614D79EDb330`, v
 - [x] Reduce `fund` gas: 206k → 186k by dropping `fundedAt`. The 150k target isn't reachable without storing only a hash of the deal (the remaining cost is 3 cold storage slots, the EIP-3009 transfer and two signature checks). Not worth a redesign before the audit; at Whitechain gas prices the difference is a fraction of a cent.
 - [ ] Confirm the **mainnet** USDT address on Whitechain and that it supports EIP-3009, then rerun the fork test on mainnet.
 - [ ] Decide the treasury, arbiter and owner Safes (2-of-3), and check that Safe is deployed on Whitechain.
+
+## SplitPay (`src/SplitPay.sol`, added 11 Nov 2026)
+
+One payment, many recipients. Deployed on Whitechain Sepolia at `0xADE9b2D2e933ce3d1fd760Da6424459d70c2e6f1` (verified).
+
+- **No owner, no admin, no fee, not upgradeable.** The contract holds no money between transactions.
+- **One signature:** the payer signs an EIP-3009 `receiveWithAuthorization` to the contract for the total. The nonce is `splitNonce(to, amounts, memo)`, which hashes the chain id, the contract address, every recipient and amount in order, and the memo. Whoever submits it cannot change who is paid or how much.
+- **All or nothing:** if one recipient can't be paid (for example the token blocklists them), the whole payment reverts and the payer is not charged.
+- **Limits:** 1 to 50 recipients; no zero address, no zero amount; the payer, the contract and the token can't be recipients.
+- **Tests (`test/SplitPay.t.sol`):** 14 pass, including a fuzz test on money conservation and attacks: swapped recipient, changed shares with the same total, reordered shares, replay, and using the authorization directly on the token.
+- **Not done:** no Slither or Aderyn run on this contract yet. `scripts/split-e2e.ts` checks the TypeScript nonce against the contract on testnet.

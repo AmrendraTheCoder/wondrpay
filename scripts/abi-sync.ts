@@ -3,7 +3,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs"
 import { join } from "node:path"
 
-const CONTRACTS = ["ProtectedEscrow"]
+const CONTRACTS = ["ProtectedEscrow", "SplitPay"]
 const root = new URL("..", import.meta.url).pathname
 const outDir = join(root, "packages/shared/src/abi")
 mkdirSync(outDir, { recursive: true })

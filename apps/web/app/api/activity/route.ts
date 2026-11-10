@@ -4,6 +4,7 @@ import { getAddress, isAddress, type Address } from "viem"
 import { listReceipts, config, rewardsPool, cached } from "@whitepay/server"
 import { EXPLORER_URL, ROUTER_ADDRESS, USDT_ADDRESS } from "@whitepay/shared"
 import { ESCROW_ADDRESS, ESCROW_HISTORY } from "@whitepay/shared/escrow"
+import { SPLIT_ADDRESS } from "@whitepay/shared/split"
 import { json, errorMessage } from "@/lib/json"
 
 export const runtime = "nodejs"
@@ -15,7 +16,7 @@ export type ActivityRow = {
   counterpartyName?: string
   amount: string
   at: number
-  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay" | "deal"
+  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay" | "deal" | "split"
   txHash: string
   explorer: string
   source: "arkiv" | "chain"
@@ -73,14 +74,15 @@ export async function GET(req: Request) {
       const other = incoming ? t.from.hash : t.to.hash
       const viaRouter = other.toLowerCase() === router
       const viaEscrow = escrows.has(other.toLowerCase())
+      const viaSplit = other.toLowerCase() === SPLIT_ADDRESS.toLowerCase()
       rows.set(tx, {
         key: `${tx}:${t.log_index ?? 0}`,
         direction: incoming ? "in" : "out",
         counterparty: other,
-        counterpartyName: viaEscrow ? (incoming ? "Protected deal payout" : "Held in protection") : viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "Refund" : "WondrPay payment") : undefined,
+        counterpartyName: viaSplit ? (incoming ? "Your share of a split payment" : "Split payment") : viaEscrow ? (incoming ? "Protected deal payout" : "Held in protection") : viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "Refund" : "WondrPay payment") : undefined,
         amount: BigInt(t.total.value).toString(),
         at: Math.floor(new Date(t.timestamp).getTime() / 1000),
-        kind: viaEscrow ? "deal" : viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "refund" : "whitepay") : "transfer",
+        kind: viaSplit ? "split" : viaEscrow ? "deal" : viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "refund" : "whitepay") : "transfer",
         txHash: tx,
         explorer: `${EXPLORER_URL}/tx/${tx}`,
         source: "chain",

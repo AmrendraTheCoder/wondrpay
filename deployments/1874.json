@@ -46,6 +46,12 @@
       "note": "Testnet: owner, treasury and arbiter are the deployer. Mainnet uses separate 2-of-3 Safes.",
       "superseded": "2026-11-10",
       "reason": "loophole fixes: min inspection 1 day, one partial offer per dispute, buyer silence on an offer escalates instead of accepting, either side may concede"
+    },
+    "SplitPay": {
+      "address": "0xADE9b2D2e933ce3d1fd760Da6424459d70c2e6f1",
+      "tx": "0x018307c8cf6df14bbf081a1b3cfd0c819397dd63d069ed080114e5d56e4cd864",
+      "deployedAt": "2026-11-11",
+      "note": "One payment, many recipients. No owner, no settings, no fee."
     }
   },
   "token": {

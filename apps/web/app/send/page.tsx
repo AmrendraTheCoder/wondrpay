@@ -34,6 +34,7 @@ function Send() {
   const [lookupErr, setLookupErr] = useState("")
   const [amount, setAmount] = useState(sp.get("amount") ?? "")
   const fixedAmount = !!sp.get("amount")
+  const ask = /^0x[0-9a-fA-F]{64}$/.test(sp.get("ask") ?? "") ? (sp.get("ask") as Hex) : null // paying a money request
   const [unlock, setUnlock] = useState(false)
   const [phase, setPhase] = useState<"idle" | "signing" | "settling" | "finishing" | "done" | "failed">("idle")
   const [result, setResult] = useState<{ explorer?: string; error?: string; code?: string }>({})
@@ -85,7 +86,7 @@ function Send() {
     setStartedAt(Math.floor(Date.now() / 1000))
     try {
       const value = parseUnits(amount, 6)
-      const memo = keccak256(toHex(`p2p/${account.address}/${payee.address}/${Date.now()}/${crypto.randomUUID()}`))
+      const memo = ask ?? keccak256(toHex(`p2p/${account.address}/${payee.address}/${Date.now()}/${crypto.randomUUID()}`))
       const nonce = directNonce(payee.address, memo) // binds recipient + memo: the relayer can't redirect it
       const validBefore = BigInt(Math.floor(Date.now() / 1000) + 600)
       const signature = await account.signTypedData(
@@ -174,7 +175,7 @@ function Send() {
                   : <span className="badge badge-warn">Unnamed address: check it's right</span>}
               </div>
             </div>
-            <div className="sub center mt-4">You are paying</div>
+            <div className="sub center mt-4">{ask ? "You are paying a request from this person" : "You are paying"}</div>
             <input className="amount-input" inputMode="decimal" placeholder="0.00" value={amount} readOnly={fixedAmount}
               onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))} />
             <div className="sub center">USDT</div>

@@ -16,7 +16,7 @@ export const ago = (unixSeconds: number) => {
   return new Date(unixSeconds * 1000).toLocaleDateString()
 }
 
-export const initials = (name?: string) => (name ? name.replace(/\.whitepay\.eth$/, "").slice(0, 1).toUpperCase() : "?")
+export const initials = (name?: string) => (name ? name.replace(/\.(whitepay|wondrpay)\.eth$/, "").slice(0, 1).toUpperCase() : "?")
 
 export const mmss = (secs: number) => {
   const s = Math.max(0, Math.floor(secs))

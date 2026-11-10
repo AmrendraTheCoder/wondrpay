@@ -1,0 +1,11 @@
+/* Split: people rows and request rows. Uses the app's tokens and the deal screens' field styles. */
+.split-row, .split-ask { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.split-row .grow, .split-ask .grow { flex: 1; min-width: 0; }
+.split-row .grow b, .split-ask .grow b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.split-share { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.split-amt { width: 104px; flex: none; padding: 10px 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.split-x { width: 32px; height: 32px; flex: none; border: 0; border-radius: 50%; background: var(--surface-2); color: var(--muted); display: grid; place-items: center; cursor: pointer; }
+.split-x:disabled { opacity: .5; }
+.split-ask { flex-wrap: wrap; }
+.split-ask-go { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+.split-ask-go .btn { padding: 11px 10px; font-size: 15px; }

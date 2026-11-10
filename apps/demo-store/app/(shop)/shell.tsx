@@ -160,7 +160,7 @@ export function Footer() {
         </div>
         <div>
           <h4>For developers</h4>
-          <ul><li><a href="/dashboard">Seller dashboard (shop owner)</a></li><li><a href="/plain.html">Plain HTML checkout</a></li><li><a href="https://wondrpay.vercel.app/developers">Checkout SDK docs</a></li><li><a href="https://github.com/AmrendraTheCoder/whitepay/tree/main/apps/demo-store">Source code</a></li></ul>
+          <ul><li><a href="/dashboard">Seller dashboard (shop owner)</a></li><li><a href="/plain.html">Plain HTML checkout</a></li><li><a href="https://wondrpay.vercel.app/developers">Checkout SDK docs</a></li><li><a href="https://github.com/AmrendraTheCoder/wondrpay/tree/main/apps/demo-store">Source code</a></li></ul>
         </div>
         <div className="ks-footer-promise">
           <p><b>100% original</b> guarantee for all products on amaron</p>

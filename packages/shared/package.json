@@ -11,7 +11,8 @@
     "./security": "./src/security.ts",
     "./autopay": "./src/autopay.ts",
     "./rewards": "./src/rewards.ts",
-    "./escrow": "./src/escrow.ts"
+    "./escrow": "./src/escrow.ts",
+    "./split": "./src/split.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
