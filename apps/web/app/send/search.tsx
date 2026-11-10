@@ -36,7 +36,7 @@ export function PayeeSearch({ initialQuery = "", onPick }: { initialQuery?: stri
     fetch(`/api/activity?address=${w.address}`).then((r) => r.json()).then((d) => {
       const seen = new Map<string, Recent>()
       for (const r of (d.rows ?? []) as { counterparty: string; counterpartyName?: string; at: number; kind: string }[]) {
-        if (r.kind === "whitepay" || r.kind === "refund") continue
+        if (r.kind === "whitepay" || r.kind === "refund" || r.kind === "deal") continue
         const k = r.counterparty.toLowerCase()
         if (k === me.current || seen.has(k)) continue
         seen.set(k, { address: r.counterparty as Address, name: r.counterpartyName, at: r.at })

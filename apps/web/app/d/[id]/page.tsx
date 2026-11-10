@@ -174,7 +174,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
 
   return (
     <main className="shell">
-      <TopBar right={<a className="chip" href="/deals">My deals</a>} />
+      <TopBar back="/deals" right={<a className="chip" href="/deals">My deals</a>} />
 
       <div className="card">
         <div className="deal-top">

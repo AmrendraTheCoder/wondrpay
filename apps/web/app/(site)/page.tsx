@@ -26,12 +26,24 @@ const FEATURES: { icon: IconName; title: string; body: string }[] = [
   { icon: "shield", title: "Verified shops", body: "Shops verify with World ID (up to 5 per person), so you know a real human is behind the counter." },
 ]
 
+const DEAL_STEPS: { icon: IconName; title: string; body: string }[] = [
+  { icon: "at", title: "The seller makes a link", body: "Price, what is included, and how many days they need to deliver. One signature, no fee to create." },
+  { icon: "lock", title: "The buyer pays into protection", body: "The money goes to a contract on Whitechain, not to the seller and not to WondrPay. Nobody can take it early." },
+  { icon: "check", title: "Deliver, confirm, paid", body: "The buyer confirms and the seller is paid. If the buyer stays silent, the seller is paid automatically when the checking time ends." },
+]
+const DEAL_USERS: { icon: IconName; title: string; body: string }[] = [
+  { icon: "key", title: "Freelancers", body: "Send a protected link before you start. The client's money is already set aside, so you never chase an unpaid invoice." },
+  { icon: "store", title: "Online sellers", body: "Sell to buyers who have never heard of you. They pay because they can get their money back if nothing arrives." },
+  { icon: "shield", title: "Buyers", body: "If the seller doesn't deliver in time, you are refunded automatically. If something is wrong, report it and the seller must answer." },
+]
+
 const FAQ = [
   { id: "real-money", title: "Is this real money?", content: "Not yet. WondrPay runs on Whitechain Sepolia testnet with test USDT, so you can try every feature safely. Mainnet follows audits and licensing." },
   { id: "wallet", title: "Do I need a crypto wallet?", content: "No. WondrPay creates one on your phone in seconds and protects it with your fingerprint or PIN. If you already use MetaMask, connect it with WalletConnect." },
   { id: "gas", title: "Who pays the network fees?", content: "WondrPay does. Payments are signed USDT authorizations that our relayer submits, so you never need a gas token." },
   { id: "double", title: "Can a shop charge me twice?", content: "No. Each payment carries a single-use nonce and the exact amount the shop signed. Subscription payments are capped and can only run in their own time window." },
   { id: "refunds", title: "Can a shop refund me?", content: "Yes, from its dashboard with no fee. A refund can only go back to the wallet that paid, and never for more than you paid." },
+  { id: "protected", title: "What if I pay and get nothing?", content: "Use a protected deal. Your money waits in a contract until you confirm. If the seller misses the delivery deadline you are refunded in full, fee included. If you report a problem and the seller doesn't answer in time, you are refunded too." },
   { id: "data", title: "Where is my data stored?", content: "Your key stays on your device. Payment requests and receipts are public, tamper-evident records on Arkiv with no personal data in clear text." },
 ]
 
@@ -123,7 +135,17 @@ export default async function Landing() {
         </Grid>
       </Section>
 
-      <Section aria-labelledby="business">
+      <Section id="protected" aria-labelledby="protected-title">
+        <SectionHeader id="protected-title" eyebrow="Protected deals" title="Deal with a stranger without the risk." description="When you don't know the other person, the money waits in a contract until the buyer confirms. If someone goes silent, the deadline decides, not an argument." actions={<ButtonLink href="/deal/new" variant="highlight" iconRight="arrowRight">Create a protected deal</ButtonLink>} />
+        <Grid as="ol" cols={3} className="reset-list">
+          {DEAL_STEPS.map((st, i) => <li key={st.title}><Spotlight><Card icon={st.icon} title={`${i + 1}. ${st.title}`}><p>{st.body}</p></Card></Spotlight></li>)}
+        </Grid>
+        <Grid cols={3}>
+          {DEAL_USERS.map((u) => <Spotlight key={u.title}><Card icon={u.icon} title={u.title}><p>{u.body}</p></Card></Spotlight>)}
+        </Grid>
+      </Section>
+
+      <Section tone="muted" aria-labelledby="business">
         <div className="split">
           <div className="wp-stack">
             <SectionHeader id="business" eyebrow="For business" title="Get paid in a second. Keep more of it." description="Show a QR at the counter, add checkout to your site, or sell subscriptions. Money lands in your wallet, not a payout queue." />
@@ -147,7 +169,7 @@ export default async function Landing() {
         </div>
       </Section>
 
-      <Section tone="muted" aria-labelledby="developers">
+      <Section aria-labelledby="developers">
         <div className="split">
           <CodeBlock code={SNIPPET} label="Checkout integration example" />
           <div className="wp-stack">
@@ -161,7 +183,7 @@ export default async function Landing() {
         </div>
       </Section>
 
-      <Section aria-labelledby="security">
+      <Section tone="muted" aria-labelledby="security">
         <SectionHeader id="security" eyebrow="Security" title="Your money moves only when you say so." actions={<ButtonLink href="/security" variant="secondary" iconRight="arrowRight">How WondrPay is secured</ButtonLink>} />
         <Grid cols={3}>
           <Spotlight><Card icon="key" title="Keys stay on your phone"><p>Encrypted with your fingerprint (passkey) or PIN, locked after five wrong tries.</p></Card></Spotlight>
@@ -170,12 +192,12 @@ export default async function Landing() {
         </Grid>
       </Section>
 
-      <Section tone="muted" aria-labelledby="faq">
+      <Section aria-labelledby="faq">
         <SectionHeader id="faq" eyebrow="FAQ" title="Questions, answered." />
         <Accordion items={FAQ} exclusive name="faq" />
       </Section>
 
-      <Section aria-labelledby="cta">
+      <Section tone="muted" aria-labelledby="cta">
         <SectionHeader id="cta" align="center" title="Your first payment takes 30 seconds." description="Create a wallet in your browser, get test USDT, and scan any WondrPay QR." actions={<><OpenApp size="lg" label="Get started" /><ButtonLink href="/business" variant="secondary" size="lg">For business</ButtonLink></>} />
       </Section>
     </>

@@ -18,6 +18,8 @@ export default function Deals() {
   // null = not chosen yet: open on the first tab that has something in it
   const [picked, setTab] = useState<Tab | null>(null)
   const [desk, setDesk] = useState<DealView[] | null>(null) // only for the dispute desk wallet
+  const [buyingHint, setBuyingHint] = useState(false)
+  useEffect(() => { if (new URLSearchParams(location.search).get("buying")) { setBuyingHint(true); setTab("buying") } }, [])
 
   useEffect(() => setWallet(getWallet()), [])
   useEffect(() => {
@@ -48,9 +50,13 @@ export default function Deals() {
   const now = Math.floor(Date.now() / 1000)
 
   return (
-    <main className="shell">
-      <TopBar right={<a className="chip" href="/deal/new">New deal</a>} />
+    <main className="shell with-nav">
+      <TopBar back="/money" right={<a className="chip" href="/deal/new">New deal</a>} />
       <h1 className="deal-h1">Protected deals</h1>
+      <div className="sub">For deals with people you don't know yet. The money is held until the buyer confirms.</div>
+      {buyingHint && (
+        <div className="deal-note">To buy, open the link the seller sent you and tap <b>Pay protected</b>. No link yet? Ask the seller to create a protected deal in WondrPay.</div>
+      )}
       <div className="seg">
         <button className={tab === "action" ? "on" : ""} onClick={() => setTab("action")}>Your move{action.length > 0 && <span className="seg-badge" style={{ marginLeft: 6 }}>{action.length}</span>}</button>
         <button className={tab === "selling" ? "on" : ""} onClick={() => setTab("selling")}>Selling</button>

@@ -92,7 +92,7 @@ export default function NewDeal() {
     const text = `${title.trim()} for ${price} USDT, protected by WondrPay: your money is held safely until you confirm you received it.`
     return (
       <main className="shell">
-        <TopBar right={<a className="chip" href="/deals">My deals</a>} />
+        <TopBar back="/deals" right={<a className="chip" href="/deals">My deals</a>} />
         <div className="card result">
           <div className="icon ok" aria-hidden>{Icon.shield(44)}</div>
           <h1>Protected link ready</h1>
@@ -113,7 +113,7 @@ export default function NewDeal() {
 
   return (
     <main className="shell">
-      <TopBar right={<a className="chip" href="/deals">My deals</a>} />
+      <TopBar back="/deals" right={<a className="chip" href="/deals">My deals</a>} />
       <h1 className="deal-h1">New protected deal</h1>
       <div className="sub">The buyer's money is held safely until they confirm they received it. You get paid automatically if they don't report a problem in time.</div>
 

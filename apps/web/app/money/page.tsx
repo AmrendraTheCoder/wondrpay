@@ -4,6 +4,7 @@ import { Icon, Identicon, useWalletData, Toast, type Activity } from "../ui"
 import { usdt, short } from "@/lib/format"
 import { useHideBalance } from "@/lib/prefs"
 import { USDT_ADDRESS, EXPLORER_URL } from "@whitepay/shared"
+import { useDeals, inProtection, myMove } from "@/lib/deals"
 
 const CATS: { id: string; label: string; color: string; test: (r: Activity) => boolean }[] = [
   { id: "shops", label: "Shops", color: "#3DE0FF", test: (r) => r.kind === "p2m" },
@@ -20,6 +21,10 @@ export default function Money() {
   const [qr, setQr] = useState("")
   const [showAdd, setShowAdd] = useState(false)
   const show = (v: bigint | string) => (hidden ? "••••" : usdt(v))
+  const deals = useDeals(wallet?.address)
+  const me = wallet?.address.toLowerCase() ?? ""
+  const held = deals ? inProtection(deals, me) : null
+  const dealsToDo = deals ? deals.filter((d) => myMove(d, me)).length : 0
 
   const stats = useMemo(() => {
     const now = new Date()
@@ -72,6 +77,17 @@ export default function Money() {
           <a href="/transactions"><span>{Icon.history(24)}</span>History</a>
         </div>
       </section>
+
+      {held && held.open > 0 && (
+        <a className="card stack protect-card" href="/deals">
+          <div className="row"><h2 className="m-0">In protection</h2><span className="sub">{held.open} open deal{held.open === 1 ? "" : "s"} ›</span></div>
+          <div className="io two">
+            <div><span className="sub">You paid in</span><b>{show(held.paid)}</b></div>
+            <div><span className="sub">Coming to you</span><b className="pos">{show(held.coming)}</b></div>
+          </div>
+          <div className="sub">Held by the protection contract until each deal finishes. It isn't part of your balance above.</div>
+        </a>
+      )}
 
       <section className="card stack">
         <div className="row"><h2 className="m-0">This month</h2><a className="sub" href="/transactions">See all ›</a></div>
@@ -134,6 +150,7 @@ export default function Money() {
       </section>
 
       <div className="menu-list">
+        <a className="menu-row" href="/deals"><span className="ic">{Icon.shield(24)}</span>Protected deals{dealsToDo > 0 && <span className="seg-badge">{dealsToDo}</span>}<span className="chev">{Icon.chev()}</span></a>
         <a className="menu-row" href="/autopay"><span className="ic">{Icon.repeat(24)}</span>Subscriptions<span className="chev">{Icon.chev()}</span></a>
         <a className="menu-row" href={wallet ? `${EXPLORER_URL}/address/${wallet.address}` : "#"} target="_blank" rel="noreferrer"><span className="ic">{Icon.history(24)}</span>View on Whitechain explorer<span className="chev">{Icon.chev()}</span></a>
         <a className="menu-row" href={`${EXPLORER_URL}/address/${USDT_ADDRESS}`} target="_blank" rel="noreferrer"><span className="ic">{Icon.shield()}</span>About USDT on Whitechain<span className="chev">{Icon.chev()}</span></a>

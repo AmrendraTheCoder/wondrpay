@@ -8,6 +8,9 @@ export { ProtectedEscrowAbi as ESCROW_ABI } from "./abi/ProtectedEscrow"
 /** Whitechain Sepolia deployment (deployments/1874.json → contracts.ProtectedEscrow). Testnet roles = deployer. */
 export const ESCROW_ADDRESS: Address = "0x6260d61536cbc49AC69DF3edEfc0614D79EDb330"
 
+/** Earlier testnet deployments (deployments/1874.json). Deals funded there still pay out from them. */
+export const ESCROW_HISTORY: Address[] = ["0x9Ef5850b2E526CB9D40784f21B042BDd9aa7E24d", "0xBbE402F5c137AEc229c801d7F89ba3dD384fB649"]
+
 // ------------------------------------------------------------------ enums (same order as Solidity)
 export enum DealState { None, Funded, Delivered, Disputed, Escalated, Released, Refunded, Settled }
 export enum ActionKind {

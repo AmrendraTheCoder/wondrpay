@@ -45,7 +45,7 @@ export function SiteHeader() {
 }
 
 const COLS = [
-  { title: "Product", links: [["Open the app", "/app"], ["Autopay", "/#autopay"], ["Pricing", "/pricing"], ["Status", "/status"]] },
+  { title: "Product", links: [["Open the app", "/app"], ["Protected deals", "/#protected"], ["Autopay", "/#autopay"], ["Pricing", "/pricing"], ["Status", "/status"]] },
   { title: "Business", links: [["Accept payments", "/business"], ["Checkout SDK", "/developers"], ["Demo store", "https://wondrpay-demo-store.vercel.app"], ["Subscriptions", "/business#subscriptions"]] },
   { title: "Developers", links: [["Documentation", "/developers"], ["Webhooks", "/developers#webhooks"], ["GitHub", "https://github.com/AmrendraTheCoder/whitepay"], ["Contracts", "/status#contracts"]] },
   { title: "Company", links: [["Security", "/security"], ["Terms", "/terms"], ["Privacy", "/privacy"], ["Contact", "https://github.com/AmrendraTheCoder/whitepay/issues"]] },

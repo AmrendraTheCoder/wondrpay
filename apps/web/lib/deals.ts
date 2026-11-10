@@ -1,5 +1,6 @@
 "use client"
 // Client helpers for protected deals: the shapes the API returns and plain-language wording.
+import { useEffect, useState } from "react"
 import { DealState, isClosed } from "@whitepay/shared/escrow"
 
 export type DealEventView = { key: string; actor: string; role: "payer" | "payee" | "arbiter"; kind: string; text: string; evidence?: string; at: number }
@@ -74,3 +75,43 @@ export function usdtExact(v: string | bigint) {
   const frac = (n % 1_000_000n).toString().padStart(6, "0").replace(/0{1,4}$/, "")
   return `${whole.toLocaleString("en-IN")}.${frac}`
 }
+
+// one request per wallet, shared by everything on the page that shows deals (banner, Money card, menu badge)
+const inflight = new Map<string, { at: number; p: Promise<DealView[] | null> }>()
+function fetchDeals(address: string) {
+  const k = address.toLowerCase(), hit = inflight.get(k)
+  if (hit && Date.now() - hit.at < 10_000) return hit.p
+  const p = fetch(`/api/deals?party=${address}`).then((r) => (r.ok ? r.json() : null)).then((d) => (d?.deals as DealView[]) ?? null).catch(() => null)
+  inflight.set(k, { at: Date.now(), p })
+  return p
+}
+
+/** This wallet's protected deals, refreshed every 30 s while the tab is visible. null = still loading / unavailable. */
+export function useDeals(address?: string) {
+  const [deals, setDeals] = useState<DealView[] | null>(null)
+  useEffect(() => {
+    if (!address) return
+    let off = false
+    const load = () => fetchDeals(address).then((d) => { if (!off && d) setDeals(d) })
+    void load()
+    const t = setInterval(() => { if (document.visibilityState === "visible") void load() }, 30_000)
+    return () => { off = true; clearInterval(t) }
+  }, [address])
+  return deals
+}
+
+/** Money this wallet has tied up in open deals: what it paid in as a buyer, and what is on its way as a seller. */
+export function inProtection(deals: DealView[], me: string) {
+  let paid = 0n, coming = 0n, open = 0
+  for (const d of deals) {
+    if (d.state === DealState.None || isClosed(d.state)) continue
+    open++
+    if (d.payer?.toLowerCase() === me) paid += BigInt(d.total)
+    else if (d.payee.toLowerCase() === me) coming += BigInt(d.amount)
+  }
+  return { paid, coming, open }
+}
+
+const INTRO_KEY = "whitepay.deal-intro.v1"
+export const introDismissed = () => { try { return localStorage.getItem(INTRO_KEY) === "1" } catch { return false } }
+export const dismissIntro = () => { try { localStorage.setItem(INTRO_KEY, "1") } catch {} }

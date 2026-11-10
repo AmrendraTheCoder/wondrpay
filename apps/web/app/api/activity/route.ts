@@ -3,6 +3,7 @@
 import { getAddress, isAddress, type Address } from "viem"
 import { listReceipts, config, rewardsPool, cached } from "@whitepay/server"
 import { EXPLORER_URL, ROUTER_ADDRESS, USDT_ADDRESS } from "@whitepay/shared"
+import { ESCROW_ADDRESS, ESCROW_HISTORY } from "@whitepay/shared/escrow"
 import { json, errorMessage } from "@/lib/json"
 
 export const runtime = "nodejs"
@@ -14,7 +15,7 @@ export type ActivityRow = {
   counterpartyName?: string
   amount: string
   at: number
-  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay"
+  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay" | "deal"
   txHash: string
   explorer: string
   source: "arkiv" | "chain"
@@ -62,6 +63,7 @@ export async function GET(req: Request) {
     }
     // 2) every on-chain USDT transfer not already covered by a receipt
     const router = ROUTER_ADDRESS.toLowerCase()
+    const escrows = new Set([ESCROW_ADDRESS, ...ESCROW_HISTORY].map((a) => a.toLowerCase()))
     for (const t of chain) {
       const tx = (t.transaction_hash ?? t.tx_hash ?? "").toLowerCase()
       if (!tx || rows.has(tx)) continue
@@ -70,14 +72,15 @@ export async function GET(req: Request) {
       const incoming = to === lc
       const other = incoming ? t.from.hash : t.to.hash
       const viaRouter = other.toLowerCase() === router
+      const viaEscrow = escrows.has(other.toLowerCase())
       rows.set(tx, {
         key: `${tx}:${t.log_index ?? 0}`,
         direction: incoming ? "in" : "out",
         counterparty: other,
-        counterpartyName: viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "Refund" : "WondrPay payment") : undefined,
+        counterpartyName: viaEscrow ? (incoming ? "Protected deal payout" : "Held in protection") : viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "Refund" : "WondrPay payment") : undefined,
         amount: BigInt(t.total.value).toString(),
         at: Math.floor(new Date(t.timestamp).getTime() / 1000),
-        kind: viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "refund" : "whitepay") : "transfer",
+        kind: viaEscrow ? "deal" : viaRouter ? (t.method === "refund" || t.method === "refundDirect" ? "refund" : "whitepay") : "transfer",
         txHash: tx,
         explorer: `${EXPLORER_URL}/tx/${tx}`,
         source: "chain",

@@ -53,7 +53,7 @@ export const prettyName = (name?: string, address?: string) =>
 // Tabs and the routes that belong to each (sub-pages keep their tab lit).
 export const TABS = [
   { href: "/app", label: "Home", match: ["/app"] },
-  { href: "/money", label: "Money", match: ["/money", "/transactions"] },
+  { href: "/money", label: "Money", match: ["/money", "/transactions", "/deals"] },
   { href: "/merchant", label: "Shop", match: ["/merchant"] },
   { href: "/you", label: "You", match: ["/you", "/autopay"] },
 ] as const
@@ -108,14 +108,14 @@ export type Activity = {
   counterpartyName?: string
   amount: string
   at: number
-  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay"
+  kind: "p2m" | "p2p" | "transfer" | "whitepay" | "refund" | "autopay" | "deal"
   txHash: string
   explorer: string
   source: "arkiv" | "chain"
 }
 
 export const activityLabel = (r: Activity) =>
-  r.kind === "p2m" ? "Shop QR" : r.kind === "p2p" ? "Person" : r.kind === "refund" ? "Refund" : r.kind === "autopay" ? "Autopay" : r.kind === "whitepay" ? "WondrPay" : "Transfer"
+  r.kind === "p2m" ? "Shop QR" : r.kind === "p2p" ? "Person" : r.kind === "refund" ? "Refund" : r.kind === "autopay" ? "Autopay" : r.kind === "whitepay" ? "WondrPay" : r.kind === "deal" ? "Protected deal" : "Transfer"
 
 /** Wallet + live data for the ACTIVE wallet (any kind): balance (Whitechain), name, unified activity
  *  (Arkiv receipts + every on-chain USDT transfer). Polls the balance and auto-detects incoming money. */
