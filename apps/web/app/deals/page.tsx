@@ -18,8 +18,7 @@ export default function Deals() {
   // null = not chosen yet: open on the first tab that has something in it
   const [picked, setTab] = useState<Tab | null>(null)
   const [desk, setDesk] = useState<DealView[] | null>(null) // only for the dispute desk wallet
-  const [buyingHint, setBuyingHint] = useState(false)
-  useEffect(() => { if (new URLSearchParams(location.search).get("buying")) { setBuyingHint(true); setTab("buying") } }, [])
+  useEffect(() => { if (new URLSearchParams(location.search).get("buying")) setTab("buying") }, [])
 
   useEffect(() => setWallet(getWallet()), [])
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function Deals() {
   const action = (deals ?? []).filter((d) => myMove(d, me))
   const selling = (deals ?? []).filter((d) => d.payee.toLowerCase() === me)
   const buying = (deals ?? []).filter((d) => d.payer?.toLowerCase() === me && d.state !== DealState.None)
-  const tab: Tab = picked ?? (action.length ? "action" : selling.length ? "selling" : buying.length ? "buying" : "selling")
+  const tab: Tab = picked ?? (action.length ? "action" : selling.length ? "selling" : buying.length ? "buying" : "action")
   const list = tab === "desk" ? (desk ?? []) : tab === "action" ? action : tab === "selling" ? selling : buying
   const now = Math.floor(Date.now() / 1000)
 
@@ -54,9 +53,6 @@ export default function Deals() {
       <TopBar back="/money" right={<a className="chip" href="/deal/new">New deal</a>} />
       <h1 className="deal-h1">Protected deals</h1>
       <div className="sub">For deals with people you don't know yet. The money is held until the buyer confirms.</div>
-      {buyingHint && (
-        <div className="deal-note">To buy, open the link the seller sent you and tap <b>Pay protected</b>. No link yet? Ask the seller to create a protected deal in WondrPay.</div>
-      )}
       <div className="seg">
         <button className={tab === "action" ? "on" : ""} onClick={() => setTab("action")}>Your move{action.length > 0 && <span className="seg-badge" style={{ marginLeft: 6 }}>{action.length}</span>}</button>
         <button className={tab === "selling" ? "on" : ""} onClick={() => setTab("selling")}>Selling</button>
@@ -71,23 +67,42 @@ export default function Deals() {
           ))}
         </div>
       )}
-      {deals && deals.length === 0 && tab !== "desk" ? (
-        <div className="card stack">
-          <h2>How a protected deal works</h2>
-          <ol className="deal-how">
-            <li><b>You create a link</b><span>Set the price and how long you need to deliver.</span></li>
-            <li><b>The buyer pays into protection</b><span>The money is held safely. Nobody can take it early.</span></li>
-            <li><b>You deliver, they confirm</b><span>You're paid when they confirm, or automatically if they stay silent.</span></li>
-          </ol>
-          <a className="btn btn-primary" href="/deal/new">Create a protected deal</a>
-          <div className="sub center">Buying? Open the link the seller sent you.</div>
-        </div>
-      ) : deals && list.length === 0 && (
-        <div className="card stack center">
-          <div className="sub">{tab === "desk" ? "No disputes are waiting for a decision." : tab === "action" ? "Nothing is waiting on you. You're all caught up." : tab === "selling" ? "You haven't created a protected deal yet." : "You haven't paid for a protected deal yet. Open the link a seller sent you."}</div>
-          {tab === "selling" && <a className="btn btn-primary" href="/deal/new">Create a protected deal</a>}
+      {deals && list.length === 0 && tab === "action" && (
+        <div className="card deal-empty">
+          <span className="deal-empty-ic ok" aria-hidden>{Icon.check(26)}</span>
+          <b>Nothing is waiting on you</b>
+          <div className="sub">When a buyer pays, or something you bought is delivered, it shows up here with what to do next.</div>
+          {deals.length === 0 && (
+            <div className="deal-intro-go">
+              <button className="btn btn-primary" onClick={() => setTab("selling")}>I'm selling</button>
+              <button className="btn btn-ghost" onClick={() => setTab("buying")}>I'm buying</button>
+            </div>
+          )}
         </div>
       )}
+      {deals && list.length === 0 && tab === "selling" && (
+        <div className="card stack">
+          <h2>Sell with protection</h2>
+          <ol className="deal-how">
+            <li><b>Create a link</b><span>Set the price and how long you need to deliver.</span></li>
+            <li><b>The buyer pays into protection</b><span>The money is set aside for you before you start. Nobody can take it early.</span></li>
+            <li><b>Deliver, and get paid</b><span>You're paid when they confirm, or automatically if they stay silent.</span></li>
+          </ol>
+          <a className="btn btn-primary" href="/deal/new">Create a protected deal</a>
+        </div>
+      )}
+      {deals && list.length === 0 && tab === "buying" && (
+        <div className="card stack">
+          <h2>Buy with protection</h2>
+          <ol className="deal-how">
+            <li><b>Open the seller's link</b><span>Ask the seller for a WondrPay protected deal link. You'll see the price and the deadlines first.</span></li>
+            <li><b>Pay protected</b><span>Your money is held safely. It doesn't go to the seller yet.</span></li>
+            <li><b>Check it, then release</b><span>Not delivered in time? You're refunded automatically. Something wrong? Report it before the checking time ends.</span></li>
+          </ol>
+          <div className="sub center">Deals you pay for appear here.</div>
+        </div>
+      )}
+      {deals && list.length === 0 && tab === "desk" && <div className="card stack center"><div className="sub">No disputes are waiting for a decision.</div></div>}
       <div className="list">
         {list.map((d) => {
           const label = STATE_LABEL[d.state]

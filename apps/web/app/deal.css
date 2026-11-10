@@ -52,3 +52,8 @@
 /* movement only: the content is never hidden, even if the browser pauses animations (background tab, low power) */
 @keyframes deal-in { from { transform: translateY(6px); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .deal-note, .deal-steps li, .deal-msg { animation: none; } .deal-row { transition: none; } }
+
+.deal-empty { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 26px 18px; }
+.deal-empty b { font-size: 17px; }
+.deal-empty-ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in oklab, var(--ok) 18%, transparent); color: var(--ok); }
+.deal-empty .deal-intro-go { width: 100%; margin-top: 8px; }
